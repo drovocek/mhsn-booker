@@ -11,6 +11,7 @@ password: ownerpass,
 
 ## Technology stack
 - Java 17
-- Vaadin 21 (Flow), Spring Boot
+- Vaadin 21 (Flow)
+- Spring Boot
 - Lombok
 - Heroku
