@@ -6,8 +6,9 @@ Money counter
 
 :link: [**DEMO**](https://mhsn-booker.herokuapp.com/)
 
-username: owner;
-password: ownerpass,
+username: owner
+
+password: ownerpass
 
 ## Technology stack
 - Java 17
