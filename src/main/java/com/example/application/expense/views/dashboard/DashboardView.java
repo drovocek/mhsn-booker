@@ -1,6 +1,7 @@
-package com.example.application.views.list;
+package com.example.application.expense.views.dashboard;
 
-import com.example.application.data.service.CrmService;
+import com.example.application.MainLayout;
+import com.example.application.expense.data.service.ExpenseService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.charts.Chart;
 import com.vaadin.flow.component.charts.model.ChartType;
@@ -14,30 +15,31 @@ import com.vaadin.flow.router.Route;
 import javax.annotation.security.PermitAll;
 
 @PermitAll
-@Route(value = "dashboard", layout = MainLayout.class) 
+@Route(value = "dashboard", layout = MainLayout.class)
 @PageTitle("Dashboard | Vaadin CRM")
 public class DashboardView extends VerticalLayout {
-    private final CrmService service;
 
-    public DashboardView(CrmService service) { 
+    private final ExpenseService service;
+
+    public DashboardView(ExpenseService service) {
         this.service = service;
         addClassName("dashboard-view");
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER); 
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         add(getContactStats(), getCompaniesChart());
     }
 
     private Component getContactStats() {
-        Span stats = new Span(service.countContacts() + " contacts"); 
+        Span stats = new Span(service.countExpense() + " expense");
         stats.addClassNames("text-xl", "mt-m");
         return stats;
     }
 
     private Chart getCompaniesChart() {
-        Chart chart = new Chart(ChartType.PIE); 
+        Chart chart = new Chart(ChartType.PIE);
 
         DataSeries dataSeries = new DataSeries();
-        service.findAllCompanies().forEach(company ->
-            dataSeries.add(new DataSeriesItem(company.getName(), company.getEmployeeCount()))); 
+        service.findAll().forEach(expense ->
+                dataSeries.add(new DataSeriesItem(expense.getCategory(), expense.getPrice())));
         chart.getConfiguration().setSeries(dataSeries);
         return chart;
     }

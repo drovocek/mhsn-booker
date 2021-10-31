@@ -1,7 +1,9 @@
-package com.example.application.views.list;
+package com.example.application.expense.views;
 
-import com.example.application.data.entity.Contact;
-import com.example.application.data.service.CrmService;
+import com.example.application.MainLayout;
+import com.example.application.expense.data.entity.Expense;
+import com.example.application.expense.data.service.ExpenseService;
+import com.example.application.expense.views.form.ExpenseForm;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -11,24 +13,27 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import lombok.RequiredArgsConstructor;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.PermitAll;
 
+@RequiredArgsConstructor
 @PermitAll
-@Route(value="", layout = MainLayout.class)
-@PageTitle("Contacts | Vaadin CRM")
-public class ListView extends VerticalLayout {
+@Route(value = "", layout = MainLayout.class)
+@PageTitle("Expense | Vaadin")
+public class ExpenseView extends VerticalLayout {
 
-    private final CrmService service;
-
-    private final Grid<Contact> grid = new Grid<>(Contact.class);
+    private final Grid<Expense> grid = new Grid<>(Expense.class);
 
     private final TextField filterText = new TextField();
 
-    private ContactForm form;
+    private final ExpenseService service;
 
-    public ListView(CrmService service) {
-        this.service = service;
+    private final ExpenseForm form;
+
+    @PostConstruct
+    private void initView() {
         addClassName("list-view");
         setSizeFull();
         configureGrid();
@@ -42,9 +47,9 @@ public class ListView extends VerticalLayout {
     private void configureGrid() {
         grid.addClassNames("contact-grid");
         grid.setSizeFull();
-        grid.setColumns("firstName", "lastName", "email");
-        grid.addColumn(contact -> contact.getStatus().getName()).setHeader("Status");
-        grid.addColumn(contact -> contact.getCompany().getName()).setHeader("Company");
+//        grid.setColumns("firstName", "lastName", "email");
+//        grid.addColumn(contact -> contact.getStatus().getName()).setHeader("Status");
+//        grid.addColumn(contact -> contact.getCompany().getName()).setHeader("Company");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
         grid.asSingleSelect().addValueChangeListener(event -> editContact(event.getValue()));
@@ -65,7 +70,7 @@ public class ListView extends VerticalLayout {
     }
 
     private void updateList() {
-        grid.setItems(service.findAllContacts(filterText.getValue()));
+        grid.setItems(service.findByFilter(filterText.getValue()));
     }
 
     private Component getContent() {
@@ -77,43 +82,42 @@ public class ListView extends VerticalLayout {
         return content;
     }
 
-    public void editContact(Contact contact) {
-        if (contact == null) {
+    public void editContact(Expense expense) {
+        if (expense == null) {
             closeEditor();
         } else {
-            form.setContact(contact);
+            form.setExpense(expense);
             form.setVisible(true);
             addClassName("editing");
         }
     }
 
     private void closeEditor() {
-        form.setContact(null);
+        form.setExpense(null);
         form.setVisible(false);
         removeClassName("editing");
     }
 
     private void addContact() {
         grid.asSingleSelect().clear();
-        editContact(new Contact());
+        editContact(new Expense());
     }
 
     private void configureForm() {
-        form = new ContactForm(service.findAllCompanies(), service.findAllStatuses());
         form.setWidth("25em");
-        form.addListener(ContactForm.SaveEvent.class, this::saveContact);
-        form.addListener(ContactForm.DeleteEvent.class, this::deleteContact);
-        form.addListener(ContactForm.CloseEvent.class, e -> closeEditor());
+        form.addListener(ExpenseForm.SaveEvent.class, this::saveContact);
+        form.addListener(ExpenseForm.DeleteEvent.class, this::deleteContact);
+        form.addListener(ExpenseForm.CloseEvent.class, e -> closeEditor());
     }
 
-    private void saveContact(ContactForm.SaveEvent event) {
-        service.saveContact(event.getContact());
+    private void saveContact(ExpenseForm.SaveEvent event) {
+        service.saveExpense(event.getExpense());
         updateList();
         closeEditor();
     }
 
-    private void deleteContact(ContactForm.DeleteEvent event) {
-        service.deleteContact(event.getContact());
+    private void deleteContact(ExpenseForm.DeleteEvent event) {
+        service.deleteExpense(event.getExpense());
         updateList();
         closeEditor();
     }
