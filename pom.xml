@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <!-- Vaadin project from https://start.vaadin.com/project/3db4d242-0c35-49a3-99dc-ca9a90ad3c18 -->
-    <groupId>com.example.application</groupId>
-    <artifactId>flowcrmtutorial</artifactId>
-    <name>Project base for Spring Boot and Vaadin Flow</name>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>dro.volkov.booker</groupId>
+    <artifactId>booker</artifactId>
+    <name>Project for my dear friend Andrey Ananskiy (mhsn)</name>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <properties>

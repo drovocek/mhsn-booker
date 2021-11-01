@@ -1,0 +1,17 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  mustache:
+    check-template-location: false
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+
+vaadin:
+  pnpm:
+    enable: false
+
+logging:
+  level: org.atmosphere=warn
