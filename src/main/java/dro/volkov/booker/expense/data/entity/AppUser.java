@@ -16,7 +16,7 @@ import java.time.ZoneId;
 @Getter
 @ToString
 @Entity
-public class User extends AbstractEntity {
+public class AppUser extends AbstractEntity {
 
     @Length(min = 3, max = 15)
     private String firstName;

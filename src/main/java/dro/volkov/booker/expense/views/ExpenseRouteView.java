@@ -1,5 +1,6 @@
 package dro.volkov.booker.expense.views;
 
+import com.vaadin.flow.router.RouteAlias;
 import dro.volkov.booker.MainLayout;
 import dro.volkov.booker.expense.data.entity.Expense;
 import dro.volkov.booker.expense.data.service.ExpenseService;
@@ -21,6 +22,7 @@ import javax.annotation.security.PermitAll;
 @RequiredArgsConstructor
 @PermitAll
 @Route(value = "expenses", layout = MainLayout.class)
+@RouteAlias(value = "", layout = MainLayout.class)
 @PageTitle("Expense | Booker")
 public class ExpenseRouteView extends VerticalLayout {
 

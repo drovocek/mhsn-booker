@@ -11,6 +11,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost/booker}
+    username: ${SPRING_DATASOURCE_USERNAME:user}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
 
 vaadin:
   pnpm:
