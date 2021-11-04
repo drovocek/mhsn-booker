@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -Dspring.profiles.active="production" -jar target/booker-1.0.0.jar
+web: java -Dserver.port=$PORT $JAVA_OPTS -Dspring.profiles.active="production"
