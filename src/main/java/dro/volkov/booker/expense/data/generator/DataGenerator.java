@@ -32,21 +32,16 @@ public class DataGenerator {
 
             logger.info("Generating demo data");
             ExampleDataGenerator<Expense> expenseGenerator = new ExampleDataGenerator<>(Expense.class, LocalDateTime.now());
-            logger.info("111");
 //            expenseGenerator.setData(Expense::setPrice, DataType.AMOUNT_OF_MONEY);
             expenseGenerator.setData(Expense::setCategory, DataType.WORD);
             expenseGenerator.setData(Expense::setDescription, DataType.SENTENCE);
             expenseGenerator.setData(Expense::setDate, DataType.DATE_LAST_30_DAYS);
             expenseGenerator.setData(Expense::setUsername, DataType.FIRST_NAME);
-            logger.info("222");
             Random r = new Random(seed);
-            logger.info("333");
             List<Expense> expenses = expenseRepository.saveAll(expenseGenerator.create(50, seed)).stream()
                     .peek(expense -> expense.setPrice(BigDecimal.valueOf(generatePrice(r))))
                     .collect(Collectors.toList());
-            logger.info("444");
             expenseRepository.saveAll(expenses);
-            logger.info("555");
             logger.info("Generated demo data");
         };
     }

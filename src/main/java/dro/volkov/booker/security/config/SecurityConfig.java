@@ -1,7 +1,7 @@
 package dro.volkov.booker.security.config;
 
-import dro.volkov.booker.security.view.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurityConfigurerAdapter;
+import dro.volkov.booker.security.view.LoginView;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,11 +9,13 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-@EnableWebSecurity 
+@EnableWebSecurity
 @Configuration
-public class SecurityConfig extends VaadinWebSecurityConfigurerAdapter { 
+public class SecurityConfig extends VaadinWebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -27,7 +29,7 @@ public class SecurityConfig extends VaadinWebSecurityConfigurerAdapter {
      */
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/images/**"); 
+        web.ignoring().antMatchers("/images/**");
         super.configure(web);
     }
 
@@ -39,9 +41,14 @@ public class SecurityConfig extends VaadinWebSecurityConfigurerAdapter {
     @Bean
     @Override
     public UserDetailsService userDetailsService() {
-        return new InMemoryUserDetailsManager(User.withUsername("user") 
-            .password("{noop}userpass")
-            .roles("USER")
-            .build());
+        return new InMemoryUserDetailsManager(User.withUsername("user")
+                .password("{noop}userpass")
+                .roles("USER")
+                .build());
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
