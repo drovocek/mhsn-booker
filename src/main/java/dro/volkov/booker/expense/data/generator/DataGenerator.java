@@ -1,10 +1,10 @@
 package dro.volkov.booker.expense.data.generator;
 
-import dro.volkov.booker.expense.data.entity.Expense;
-import dro.volkov.booker.expense.data.repository.ExpenseRepository;
 import com.vaadin.exampledata.DataType;
 import com.vaadin.exampledata.ExampleDataGenerator;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import dro.volkov.booker.expense.data.entity.Expense;
+import dro.volkov.booker.expense.data.repository.ExpenseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -32,26 +32,27 @@ public class DataGenerator {
 
             logger.info("Generating demo data");
             ExampleDataGenerator<Expense> expenseGenerator = new ExampleDataGenerator<>(Expense.class, LocalDateTime.now());
-
+            logger.info("111");
 //            expenseGenerator.setData(Expense::setPrice, DataType.AMOUNT_OF_MONEY);
             expenseGenerator.setData(Expense::setCategory, DataType.WORD);
             expenseGenerator.setData(Expense::setDescription, DataType.SENTENCE);
             expenseGenerator.setData(Expense::setDate, DataType.DATE_LAST_30_DAYS);
             expenseGenerator.setData(Expense::setUsername, DataType.FIRST_NAME);
-
+            logger.info("222");
             Random r = new Random(seed);
+            logger.info("333");
             List<Expense> expenses = expenseRepository.saveAll(expenseGenerator.create(50, seed)).stream()
                     .peek(expense -> expense.setPrice(BigDecimal.valueOf(generatePrice(r))))
                     .collect(Collectors.toList());
-
+            logger.info("444");
             expenseRepository.saveAll(expenses);
-
+            logger.info("555");
             logger.info("Generated demo data");
         };
     }
 
     private long generatePrice(Random r) {
-        return (long) r.nextInt(100, 200);
+        return r.nextInt(100, 200);
     }
 
 }
