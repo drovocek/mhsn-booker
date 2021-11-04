@@ -1,4 +1,4 @@
-package dro.volkov.booker.security.entity;
+package dro.volkov.booker.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;

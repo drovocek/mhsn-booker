@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
+import dro.volkov.booker.user.view.UserRootView;
 
 public class MainLayout extends AppLayout {
 
@@ -46,7 +47,8 @@ public class MainLayout extends AppLayout {
 
         addToDrawer(new VerticalLayout(
                 listLink,
-                new RouterLink("Dashboard", DashboardView.class)
+                new RouterLink("Dashboard", DashboardView.class),
+                new RouterLink("Users", UserRootView.class)
         ));
     }
 }
