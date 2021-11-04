@@ -2,9 +2,9 @@ package dro.volkov.booker.security.service;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinServletRequest;
-import dro.volkov.booker.user.entity.Role;
-import dro.volkov.booker.user.entity.User;
-import dro.volkov.booker.user.repository.UserRepository;
+import dro.volkov.booker.user.data.entity.Role;
+import dro.volkov.booker.user.data.entity.User;
+import dro.volkov.booker.user.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;

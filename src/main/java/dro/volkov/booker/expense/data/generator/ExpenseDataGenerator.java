@@ -17,10 +17,10 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 @SpringComponent
-public class DataGenerator {
+public class ExpenseDataGenerator {
 
     @Bean
-    public CommandLineRunner loadData(ExpenseRepository expenseRepository) {
+    public CommandLineRunner loadExpenseData(ExpenseRepository expenseRepository) {
 
         return args -> {
             Logger logger = LoggerFactory.getLogger(getClass());
@@ -30,7 +30,7 @@ public class DataGenerator {
             }
             int seed = 123;
 
-            logger.info("Generating demo data");
+            logger.info("Expense generating demo data");
             ExampleDataGenerator<Expense> expenseGenerator = new ExampleDataGenerator<>(Expense.class, LocalDateTime.now());
 //            expenseGenerator.setData(Expense::setPrice, DataType.AMOUNT_OF_MONEY);
             expenseGenerator.setData(Expense::setCategory, DataType.WORD);
@@ -38,11 +38,13 @@ public class DataGenerator {
             expenseGenerator.setData(Expense::setDate, DataType.DATE_LAST_30_DAYS);
             expenseGenerator.setData(Expense::setUsername, DataType.FIRST_NAME);
             Random r = new Random(seed);
-            List<Expense> expenses = expenseRepository.saveAll(expenseGenerator.create(50, seed)).stream()
+
+            List<Expense> expenses = expenseGenerator.create(50, seed).stream()
                     .peek(expense -> expense.setPrice(BigDecimal.valueOf(generatePrice(r))))
                     .collect(Collectors.toList());
+
             expenseRepository.saveAll(expenses);
-            logger.info("Generated demo data");
+            logger.info("Expense generated demo data");
         };
     }
 

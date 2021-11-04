@@ -111,6 +111,6 @@ public abstract class EditForm<T> extends FormLayout {
     }
 
     public <U extends ComponentEvent<?>> Registration addListener(Class<U> eventType, ComponentEventListener<U> listener) {
-        return addListener(eventType, listener);
+        return getEventBus().addListener(eventType, listener);
     }
 }

@@ -1,6 +1,6 @@
-package dro.volkov.booker.user.repository;
+package dro.volkov.booker.user.data.repository;
 
-import dro.volkov.booker.user.entity.User;
+import dro.volkov.booker.user.data.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

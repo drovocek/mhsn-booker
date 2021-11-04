@@ -1,8 +1,8 @@
-package dro.volkov.booker.user.service;
+package dro.volkov.booker.user.data.service;
 
 import dro.volkov.booker.general.service.EntityCrudService;
-import dro.volkov.booker.user.entity.User;
-import dro.volkov.booker.user.repository.UserRepository;
+import dro.volkov.booker.user.data.entity.User;
+import dro.volkov.booker.user.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

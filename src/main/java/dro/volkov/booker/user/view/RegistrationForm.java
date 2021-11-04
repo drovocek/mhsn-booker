@@ -5,7 +5,7 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import dro.volkov.booker.general.view.EditForm;
-import dro.volkov.booker.user.entity.User;
+import dro.volkov.booker.user.data.entity.User;
 
 import javax.annotation.PostConstruct;
 

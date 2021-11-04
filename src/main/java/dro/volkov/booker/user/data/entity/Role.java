@@ -1,4 +1,4 @@
-package dro.volkov.booker.user.entity;
+package dro.volkov.booker.user.data.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

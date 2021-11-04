@@ -100,7 +100,7 @@ public abstract class RootGridView<T> extends VerticalLayout {
     @SneakyThrows
     private void addEntity() {
         grid.asSingleSelect().clear();
-        editContact(beanType.getConstructor(beanType).newInstance(beanType));
+        editContact(beanType.newInstance());
     }
 
     private void configureForm() {
