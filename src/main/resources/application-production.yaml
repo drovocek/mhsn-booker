@@ -22,3 +22,9 @@ vaadin:
 
 logging:
   level: org.atmosphere=warn
+
+#Custom
+app:
+  root:
+    mail: booker@app.dro
+    url: https://getpass.herokuapp.com/

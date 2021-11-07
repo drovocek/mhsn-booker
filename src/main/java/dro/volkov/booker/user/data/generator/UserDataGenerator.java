@@ -14,9 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @SpringComponent
@@ -39,9 +37,12 @@ public class UserDataGenerator {
             logger.info("User generating demo data");
             ExampleDataGenerator<User> userGenerator = new ExampleDataGenerator<>(User.class, LocalDateTime.now());
             userGenerator.setData(User::setEmail, DataType.EMAIL);
+            userGenerator.setData(User::setRegistrationDate, DataType.DATETIME_NEXT_10_YEARS);
 
             List<User> users = userGenerator.create(50, seed).stream()
-                    .peek(user -> user.setRoles(Collections.singleton(Role.USER)))
+                    .peek(user -> user.setRole(Role.USER))
+                    .peek(user -> user.setEnabled(true))
+                    .peek(user -> user.setActive(true))
                     .peek(user -> user.setPassword(passwordEncoder.encode("user")))
                     .collect(Collectors.toList());
 
@@ -50,9 +51,4 @@ public class UserDataGenerator {
             logger.info("User generated demo data");
         };
     }
-
-    private long generatePrice(Random r) {
-        return r.nextInt(100, 200);
-    }
-
 }

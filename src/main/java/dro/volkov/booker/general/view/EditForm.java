@@ -7,6 +7,7 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -18,13 +19,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class EditForm<T> extends FormLayout {
 
-    private final Button save = new Button("Save");
-    private final Button delete = new Button("Delete");
-    private final Button close = new Button("Cancel");
-
     private final Class<T> beanType;
     private Binder<T> binder;
     private T entity;
+
+    private final H1 title = new H1();
+    private final Button save = new Button("Save");
+    private final Button delete = new Button("Delete");
+    private final Button close = new Button("Cancel");
 
     protected void initView() {
         configFields();
@@ -34,6 +36,7 @@ public abstract class EditForm<T> extends FormLayout {
 
     protected void addFields(Component... components) {
         removeAll();
+        add(title);
         add(components);
         add(createButtonsLayout());
     }
@@ -65,10 +68,19 @@ public abstract class EditForm<T> extends FormLayout {
 
         save.addClickListener(event -> validateAndSave());
         delete.addClickListener(event -> fireEvent(new FormDeleteEvent<>(this, entity)));
-        close.addClickListener(event -> fireEvent(new FormCloseEvent<>(this)));
+        close.addClickListener(event -> close());
 
         binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
         return new HorizontalLayout(save, delete, close);
+    }
+
+    protected void asEditForm(boolean asEdit) {
+        delete.setVisible(asEdit);
+        if (asEdit) {
+            title.setText("Edit");
+        } else {
+            title.setText("Add");
+        }
     }
 
     protected void validateAndSave() {
@@ -78,6 +90,18 @@ public abstract class EditForm<T> extends FormLayout {
         } catch (ValidationException e) {
             e.printStackTrace();
         }
+    }
+
+    protected void open(T entity) {
+        setEntity(entity);
+        setVisible(true);
+        fireEvent(new FormOpenEvent<>(this));
+    }
+
+    protected void close() {
+        setEntity(null);
+        setVisible(false);
+        fireEvent(new FormCloseEvent<>(this));
     }
 
     public static abstract class EditFormEvent<T> extends ComponentEvent<EditForm<T>> {
@@ -106,6 +130,12 @@ public abstract class EditForm<T> extends FormLayout {
 
     public static class FormCloseEvent<T> extends EditFormEvent<T> {
         FormCloseEvent(EditForm<T> source) {
+            super(source, null);
+        }
+    }
+
+    public static class FormOpenEvent<T> extends EditFormEvent<T> {
+        FormOpenEvent(EditForm<T> source) {
             super(source, null);
         }
     }

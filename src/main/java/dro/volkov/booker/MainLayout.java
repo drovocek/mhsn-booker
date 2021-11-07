@@ -2,7 +2,7 @@ package dro.volkov.booker;
 
 import dro.volkov.booker.security.service.SecurityService;
 import dro.volkov.booker.expense.views.dashboard.DashboardView;
-import dro.volkov.booker.expense.views.ExpenseRouteView;
+import dro.volkov.booker.expense.views.ExpenseRootView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -42,7 +42,7 @@ public class MainLayout extends AppLayout {
     }
 
     private void createDrawer() {
-        RouterLink listLink = new RouterLink("Expenses", ExpenseRouteView.class);
+        RouterLink listLink = new RouterLink("Expenses", ExpenseRootView.class);
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
 
         addToDrawer(new VerticalLayout(

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -12,8 +14,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
-import java.util.Set;
 
 @Setter
 @Getter
@@ -21,7 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "user_sec_data")
-public class User {
+public class User implements Persistable<Integer> {
 
     @NotNull
     @Id
@@ -34,33 +34,51 @@ public class User {
 
     @NotNull
     @NotEmpty
+    private String username;
+
+    @NotNull
+    @NotEmpty
     @JsonIgnore
     private String password;
 
+    @Transient
+    @JsonIgnore
     private String confirmPassword;
 
-    @Transient
-    private String username;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<Role> roles;
+    @NotNull
+    @Enumerated
+    private Role role;
 
     @NotNull
     private LocalDateTime registrationDate;
 
+    private boolean active;
+
+    private boolean enabled;
+
     public User(String email, String password, Role role) {
         this.password = password;
         this.email = email;
-        this.roles = Collections.singleton(role);
+        this.role = role;
     }
 
     @PrePersist
     private void setDateIfNotSet() {
-        registrationDate = LocalDateTime.now(ZoneId.of("Europe/Moscow"));
+        if (registrationDate == null) {
+            registrationDate = LocalDateTime.now(ZoneId.of("Europe/Moscow"));
+        }
+        if (password == null) {
+            this.password = RandomStringUtils.random(32);
+        }
     }
 
-    @PostPersist
-    private void addUserName() {
+    public void setEmail(String email) {
+        this.email = email;
         this.username = email.split("@")[0];
+    }
+
+    @Override
+    public boolean isNew() {
+        return id == null;
     }
 }

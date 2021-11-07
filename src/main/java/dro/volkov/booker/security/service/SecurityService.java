@@ -42,8 +42,6 @@ public class SecurityService {
 
     public void register(String username, String password) {
         String hashedPassword = passwordEncoder.encode(password);
-        System.out.println("!!!");
-        System.out.println(hashedPassword);
         userRepository.save(new User(username, hashedPassword, Role.USER));
     }
 

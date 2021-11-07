@@ -1,36 +1,32 @@
-package dro.volkov.booker.user.view;
+package dro.volkov.booker.security.view;
 
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.textfield.PasswordField;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import dro.volkov.booker.general.view.EditForm;
-import dro.volkov.booker.user.data.entity.User;
+import com.vaadin.flow.spring.annotation.UIScope;
 
-import javax.annotation.PostConstruct;
-
+@UIScope
 @SpringComponent
-public class RegistrationForm extends EditForm<User> {
+public class RegistrationForm extends FormLayout {
 
-//    private final SecurityService authService;
-
-    private final H2 title = new H2("Registration");
-    private final TextField email = new TextField("Email");
-    private final PasswordField password = new PasswordField("Password");
-    private final PasswordField confirmPassword = new PasswordField("Confirm password");
+////    private final SecurityService authService;
+//
+//    private final H2 title = new H2("Registration");
+//    private final PasswordField password = new PasswordField("Password");
+//    private final PasswordField confirmPassword = new PasswordField("Confirm password");
 //    private final Button submitButton = new Button("submit");
-
-    public RegistrationForm() {
-        super(User.class);
-    }
-
-    @PostConstruct
-    public void initView() {
-        super.initView();
-        addFields(title, email, password, confirmPassword);
-    }
-
-
+//
+//    private Binder<User> binder=new BeanValidationBinder<>(User.class);
+//    private User formEntity;
+//
+////    public RegistrationForm() {
+////        super(User.class);
+////    }
+////
+////    @PostConstruct
+////    public void initView() {
+////        super.initView();
+////        addFields(title, email, password, confirmPassword);
+////    }
 //
 //    @PostConstruct
 //    private void initView() {
