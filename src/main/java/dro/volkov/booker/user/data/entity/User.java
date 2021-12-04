@@ -15,6 +15,8 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import static dro.volkov.booker.util.StrUtil.asUsername;
+
 @Setter
 @Getter
 @ToString
@@ -52,6 +54,8 @@ public class User implements Persistable<Integer> {
     @NotNull
     private LocalDateTime registrationDate;
 
+    private LocalDateTime lastAccessDate;
+
     private boolean active;
 
     private boolean enabled;
@@ -70,11 +74,9 @@ public class User implements Persistable<Integer> {
         if (password == null) {
             this.password = RandomStringUtils.random(32);
         }
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-        this.username = email.split("@")[0];
+        if (email != null) {
+            this.username = asUsername(email);
+        }
     }
 
     @Override

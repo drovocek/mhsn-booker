@@ -11,17 +11,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: bookerapp
-    password:
-    properties:
-      mail:
-        smtp:
-          auth: true
-        starttls:
-          enable: true
 
 vaadin:
   pnpm:
@@ -30,9 +19,6 @@ vaadin:
 logging:
   level: org.atmosphere=warn
 
-#Custom
 app:
-  root:
-    mail: booker@app.dro
-    url: http://localhost:8080/
+  root-path: http://localhost:8080
 

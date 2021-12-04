@@ -16,8 +16,8 @@ import javax.annotation.PostConstruct;
 public class UserEditForm extends EditForm<User> {
 
     private final TextField email = new TextField("Email");
-    private final Checkbox enabled = new Checkbox("Enabled");
     private final ComboBox<Role> role = new ComboBox<>("Role");
+    private final Checkbox enabled = new Checkbox("Enabled");
 
     public UserEditForm() {
         super(User.class);
@@ -31,13 +31,17 @@ public class UserEditForm extends EditForm<User> {
     @PostConstruct
     public void initView() {
         super.initView();
-        addFields(email, enabled, role);
+        addFields(email, role, enabled);
     }
 
     @Override
     protected void asEditForm(boolean asEdit) {
         super.asEditForm(asEdit);
-        enabled.setVisible(asEdit);
-        email.setVisible(!asEdit);
+        if (!asEdit) {
+            role.setValue(Role.USER);
+        }
+        enabled.setReadOnly(!asEdit);
+        role.setReadOnly(!asEdit);
+        email.setReadOnly(asEdit);
     }
 }

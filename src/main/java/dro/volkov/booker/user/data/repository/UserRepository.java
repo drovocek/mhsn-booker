@@ -15,5 +15,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             "or lower(u.registrationDate) like lower(concat('%', :searchTerm, '%'))")
     List<User> search(@Param("searchTerm") String searchTerm);
 
-    Optional<User> getUserByEmail(String email);
+    Optional<User> findUserByEmail(String email);
+
+    Optional<User> findUserByUsername(String username);
 }

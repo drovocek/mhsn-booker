@@ -4,7 +4,6 @@ import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -21,12 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static dro.volkov.booker.util.NotificationUtil.noticeSSS;
+
 @RequiredArgsConstructor
 @UIScope
 @SpringComponent
 public class ActivationForm extends FormLayout implements BeforeEnterObserver {
-
-    private final AuthService authService;
 
     private final H2 title = new H2("Activation");
     private final PasswordField password = new PasswordField("Password");
@@ -36,11 +35,14 @@ public class ActivationForm extends FormLayout implements BeforeEnterObserver {
     private final Binder<User> binder = new BeanValidationBinder<>(User.class);
     private User formEntity;
 
+    private final AuthService authService;
+
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         Map<String, List<String>> parameters = event.getLocation()
                 .getQueryParameters()
                 .getParameters();
+
         if (parameters.containsKey("email")) {
             String email = parameters.get("email").get(0);
             if (authService.activated(email)) {
@@ -50,8 +52,9 @@ public class ActivationForm extends FormLayout implements BeforeEnterObserver {
                 formEntity.setEmail(email);
                 binder.readBean(formEntity);
             }
+        } else {
+            event.forwardTo("login");
         }
-        event.forwardTo("login");
     }
 
     @PostConstruct
@@ -98,7 +101,7 @@ public class ActivationForm extends FormLayout implements BeforeEnterObserver {
     private void register() {
         if (binder.writeBeanIfValid(formEntity)) {
             authService.activate(formEntity.getEmail(), formEntity.getPassword());
-            Notification.show("Activation succeeded");
+            noticeSSS("Activation succeeded");
             getUI().ifPresent(ui -> ui.navigate("login"));
         }
     }

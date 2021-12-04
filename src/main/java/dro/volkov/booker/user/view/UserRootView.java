@@ -7,6 +7,7 @@ import dro.volkov.booker.MainLayout;
 import dro.volkov.booker.general.service.FilterCrudService;
 import dro.volkov.booker.general.view.EditForm;
 import dro.volkov.booker.general.view.RootGridView;
+import dro.volkov.booker.security.service.AuthService;
 import dro.volkov.booker.user.data.entity.User;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -18,14 +19,27 @@ import javax.annotation.security.PermitAll;
 @PageTitle("Users | Booker")
 public class UserRootView extends RootGridView<User> {
 
+    private final AuthService authService;
+
     public UserRootView(@Qualifier("userCrudService") FilterCrudService<User> service,
-                        @Qualifier("userEditForm") EditForm<User> form) {
+                        @Qualifier("userEditForm") EditForm<User> form,
+                        AuthService authService) {
         super(service, form, User.class);
+        this.authService = authService;
     }
 
     @Override
     protected void configureGrid() {
         super.configureGrid();
         grid.setColumns("enabled", "role", "username", "email", "registrationDate", "active");
+    }
+
+    @Override
+    protected void saveEntity(EditForm.FormSaveEvent<User> event) {
+        User persist = event.getEntity();
+        if (persist.isNew()) {
+            authService.sendToEmailActivationLink(persist.getEmail());
+        }
+        super.saveEntity(event);
     }
 }

@@ -17,6 +17,8 @@ import lombok.SneakyThrows;
 
 import javax.annotation.PostConstruct;
 
+import static dro.volkov.booker.util.NotificationUtil.noticeSSS;
+
 @RequiredArgsConstructor
 public abstract class RootGridView<T> extends VerticalLayout {
 
@@ -106,11 +108,13 @@ public abstract class RootGridView<T> extends VerticalLayout {
         service.save(event.getEntity());
         updateList();
         form.close();
+        noticeSSS("Save succeeded");
     }
 
     protected void deleteEntity(FormDeleteEvent<T> event) {
         service.delete(event.getEntity());
         updateList();
         form.close();
+        noticeSSS("Delete succeeded");
     }
 }

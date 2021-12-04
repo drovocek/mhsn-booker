@@ -1,7 +1,7 @@
 package dro.volkov.booker.security.service;
 
-import com.vaadin.flow.spring.annotation.UIScope;
 import dro.volkov.booker.MailService;
+import dro.volkov.booker.user.data.entity.Role;
 import dro.volkov.booker.user.data.entity.User;
 import dro.volkov.booker.user.data.service.UserCrudService;
 import lombok.RequiredArgsConstructor;
@@ -11,31 +11,37 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
-@UIScope
 @RequiredArgsConstructor
 @Service
 public class AuthService {
 
-    private final UserCrudService userService;
+    private final UserCrudService userCrudService;
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
 
     public boolean activated(String email) {
-        return userService.getByEmail(email).map(User::isActive).orElse(false);
+        return userCrudService.getByEmail(email)
+                .map(User::isActive)
+                .orElse(false);
     }
 
     @Transactional
     public void activate(String email, String password) {
-        Optional<User> userContainer = userService.getByEmail(email);
+        Optional<User> userContainer = userCrudService.getByEmail(email);
         if (userContainer.isPresent()) {
             User user = userContainer.get();
             user.setActive(true);
             user.setPassword(passwordEncoder.encode(password));
-            userService.save(user);
+            user.setRole(Role.USER);
+            userCrudService.save(user);
             mailService.sendSuccessActivationMessage(email, password);
         } else {
             throw new RuntimeException(String.format("User with email=%s doesn't exist", email));
         }
+    }
+
+    public void sendToEmailActivationLink(String email){
+        mailService.sendActivationMessage(email);
     }
 
 

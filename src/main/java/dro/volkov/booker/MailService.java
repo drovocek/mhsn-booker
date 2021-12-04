@@ -6,6 +6,8 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
+import static dro.volkov.booker.util.StrUtil.asUsername;
+
 @Service
 @RequiredArgsConstructor
 public class MailService {
@@ -15,8 +17,8 @@ public class MailService {
     @Value("${app.root.mail}")
     private String rootMail;
 
-    @Value("${app.root.url}")
-    private String rootUrl;
+    @Value("${app.root-path}")
+    private String rootPath;
 
     public void sendMessage(String targetMail, String body, String subject) {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -30,13 +32,20 @@ public class MailService {
     public void sendSuccessActivationMessage(String email, String password) {
         sendMessage(
                 email,
-                String.format("Successful account activation. Your password is %s", password),
+                String.format(
+                        """
+                                 Successful account activation.
+                                    username: %s
+                                    password: %s
+                                """
+                        , asUsername(email)
+                        , password),
                 "Activation info");
     }
 
     public void sendActivationMessage(String email) {
-        String activationUrl = rootUrl
-                .concat("activation?email=")
+        String activationUrl = rootPath
+                .concat("/activation?email=")
                 .concat(email);
         sendMessage(
                 email,

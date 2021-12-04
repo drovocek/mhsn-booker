@@ -46,6 +46,14 @@ public class UserDataGenerator {
                     .peek(user -> user.setPassword(passwordEncoder.encode("user")))
                     .collect(Collectors.toList());
 
+            User admin = new User("user@user.com",
+                    passwordEncoder.encode("userpass"),
+                    Role.ADMIN);
+            admin.setActive(true);
+            admin.setEnabled(true);
+
+            users.add(admin);
+
             userRepository.saveAll(users);
 
             logger.info("User generated demo data");

@@ -2,8 +2,6 @@ package dro.volkov.booker.security.service;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinServletRequest;
-import dro.volkov.booker.user.data.entity.Role;
-import dro.volkov.booker.user.data.entity.User;
 import dro.volkov.booker.user.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContext;
@@ -40,12 +38,12 @@ public class SecurityService {
                 null);
     }
 
-    public void register(String username, String password) {
-        String hashedPassword = passwordEncoder.encode(password);
-        userRepository.save(new User(username, hashedPassword, Role.USER));
-    }
-
-    public boolean userDoesNotExist(String email) {
-        return userRepository.getUserByEmail(email).isEmpty();
-    }
+//    public void register(String username, String password) {
+//        String hashedPassword = passwordEncoder.encode(password);
+//        userRepository.save(new User(username, hashedPassword, Role.USER));
+//    }
+//
+//    public boolean userDoesNotExist(String email) {
+//        return userRepository.getUserByEmail(email).isEmpty();
+//    }
 }

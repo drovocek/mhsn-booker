@@ -1,6 +1,5 @@
 package dro.volkov.booker.user.data.service;
 
-import dro.volkov.booker.MailService;
 import dro.volkov.booker.general.service.FilterCrudService;
 import dro.volkov.booker.user.data.entity.User;
 import dro.volkov.booker.user.data.repository.UserRepository;
@@ -15,15 +14,10 @@ import java.util.Optional;
 public class UserCrudService implements FilterCrudService<User> {
 
     private final UserRepository userRepository;
-    private final MailService mailService;
 
     @Override
     public void save(User user) {
-        if (user.isNew()) {
-            mailService.sendActivationMessage(user.getEmail());
-        } else {
-            userRepository.save(user);
-        }
+        userRepository.save(user);
     }
 
     @Override
@@ -37,6 +31,6 @@ public class UserCrudService implements FilterCrudService<User> {
     }
 
     public Optional<User> getByEmail(String email) {
-        return userRepository.getUserByEmail(email);
+        return userRepository.findUserByEmail(email);
     }
 }
