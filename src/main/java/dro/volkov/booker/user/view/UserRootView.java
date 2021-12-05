@@ -10,16 +10,20 @@ import dro.volkov.booker.general.view.RootGridView;
 import dro.volkov.booker.security.service.AuthService;
 import dro.volkov.booker.user.data.entity.User;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 
-import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 
-@PermitAll
 @UIScope
+@RolesAllowed("ROLE_ADMIN")
 @Route(value = "users", layout = MainLayout.class)
 @PageTitle("Users | Booker")
 public class UserRootView extends RootGridView<User> {
 
     private final AuthService authService;
+
+    @Value("${app.root-user-mail}")
+    private String rootUserEmail;
 
     public UserRootView(@Qualifier("userCrudService") FilterCrudService<User> service,
                         @Qualifier("userEditForm") EditForm<User> form,

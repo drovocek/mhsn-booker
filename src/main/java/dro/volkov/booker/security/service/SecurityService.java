@@ -2,21 +2,17 @@ package dro.volkov.booker.security.service;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinServletRequest;
-import dro.volkov.booker.user.data.repository.UserRepository;
+import dro.volkov.booker.user.data.entity.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
 public class SecurityService {
-
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     private static final String LOGOUT_SUCCESS_URL = "/login";
 
@@ -26,7 +22,6 @@ public class SecurityService {
         if (principal instanceof UserDetails) {
             return (UserDetails) principal;
         }
-        // Anonymous or no authentication.
         return null;
     }
 
@@ -34,16 +29,16 @@ public class SecurityService {
         UI.getCurrent().getPage().setLocation(LOGOUT_SUCCESS_URL);
         SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
         logoutHandler.logout(
-                VaadinServletRequest.getCurrent().getHttpServletRequest(), null,
-                null);
+                VaadinServletRequest.getCurrent().getHttpServletRequest(), null, null);
     }
 
-//    public void register(String username, String password) {
-//        String hashedPassword = passwordEncoder.encode(password);
-//        userRepository.save(new User(username, hashedPassword, Role.USER));
-//    }
-//
-//    public boolean userDoesNotExist(String email) {
-//        return userRepository.getUserByEmail(email).isEmpty();
-//    }
+    public boolean hasRole(Role role) {
+        UserDetails authenticatedUser = getAuthenticatedUser();
+        if (authenticatedUser == null) {
+            return false;
+        }
+        return authenticatedUser.getAuthorities().stream()
+                .peek(user-> System.out.println(user.getAuthority()))
+                .anyMatch(user -> user.getAuthority().equals(role.role()));
+    }
 }

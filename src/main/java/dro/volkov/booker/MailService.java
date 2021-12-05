@@ -14,7 +14,7 @@ public class MailService {
 
     private final MailSender mailSender;
 
-    @Value("${app.root.mail}")
+    @Value("${app.root-mail}")
     private String rootMail;
 
     @Value("${app.root-path}")

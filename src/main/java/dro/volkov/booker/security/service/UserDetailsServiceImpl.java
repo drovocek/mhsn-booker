@@ -23,7 +23,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("loadUserByUsername");
         if (log.isDebugEnabled()) {
             log.debug(String.format("Security verification for user %s", username.toLowerCase()));
         }
@@ -35,10 +34,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         Role role = user.getRole();
 
-        System.out.println(user);
         return new org.springframework.security.core.userdetails.User(
                 username,
                 user.getPassword(), user.isEnabled(), true, true, true,
-                Collections.singleton(new SimpleGrantedAuthority(role.getRoleName())));
+                Collections.singleton(new SimpleGrantedAuthority(role.role())));
     }
 }

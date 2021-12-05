@@ -20,13 +20,9 @@ public class SecurityConfig extends VaadinWebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
-
         setLoginView(http, LoginView.class);
     }
 
-    /**
-     * Allows access to static resources, bypassing Spring security.
-     */
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/images/**");
@@ -38,19 +34,10 @@ public class SecurityConfig extends VaadinWebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
     }
 
-    /**
-     * Demo UserDetailService which only provides two hardcoded
-     * in memory users and their roles.
-     * NOTE: This should not be used in real-world applications.
-     */
     @Bean
     @Override
     public UserDetailsService userDetailsService() {
         return new UserDetailsServiceImpl();
-//        return new InMemoryUserDetailsManager(User.withUsername("user")
-//                .password("$2a$12$f.3Bgg4azIHuOfBYpLWOPeaIf2P.7OG84S2l8FeVLv6epaX9tFlAi")
-//                .roles("USER")
-//                .build());
     }
 
     @Bean

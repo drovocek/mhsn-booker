@@ -11,6 +11,15 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+        starttls:
+          enable: true
 #  datasource:
 #    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost/booker}
 #    username: ${SPRING_DATASOURCE_USERNAME:user}
@@ -24,4 +33,5 @@ logging:
   level: org.atmosphere=warn
 
 app:
-  root-path: https://getpass:herokuapp:com
+  root-path: http://localhost:8080
+  root-mail: booker@app.dro

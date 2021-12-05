@@ -46,13 +46,20 @@ public class UserDataGenerator {
                     .peek(user -> user.setPassword(passwordEncoder.encode("user")))
                     .collect(Collectors.toList());
 
-            User admin = new User("user@user.com",
-                    passwordEncoder.encode("userpass"),
+            User admin = new User("admin@admin.com",
+                    passwordEncoder.encode("admin"),
                     Role.ADMIN);
             admin.setActive(true);
             admin.setEnabled(true);
 
+            User user = new User("user@user.com",
+                    passwordEncoder.encode("user"),
+                    Role.USER);
+            user.setActive(true);
+            user.setEnabled(true);
+
             users.add(admin);
+            users.add(user);
 
             userRepository.saveAll(users);
 

@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
+import dro.volkov.booker.user.data.entity.Role;
 import dro.volkov.booker.user.view.UserRootView;
 
 public class MainLayout extends AppLayout {
@@ -19,9 +20,9 @@ public class MainLayout extends AppLayout {
     private final SecurityService securityService;
 
     public MainLayout(SecurityService securityService) {
+        this.securityService = securityService;
         createHeader();
         createDrawer();
-        this.securityService = securityService;
     }
 
     private void createHeader() {
@@ -38,17 +39,23 @@ public class MainLayout extends AppLayout {
         header.addClassNames("py-0", "px-m");
 
         addToNavbar(header);
-
     }
 
     private void createDrawer() {
         RouterLink listLink = new RouterLink("Expenses", ExpenseRootView.class);
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
 
+        RouterLink usersLink = new RouterLink("Users", UserRootView.class);
+        usersLink.setHighlightCondition(HighlightConditions.sameLocation());
+        usersLink.setVisible(securityService.hasRole(Role.ADMIN));
+
+        RouterLink dashboardLink = new RouterLink("Dashboard", DashboardView.class);
+        dashboardLink.setHighlightCondition(HighlightConditions.sameLocation());
+
         addToDrawer(new VerticalLayout(
                 listLink,
-                new RouterLink("Dashboard", DashboardView.class),
-                new RouterLink("Users", UserRootView.class)
+                usersLink,
+                dashboardLink
         ));
     }
 }

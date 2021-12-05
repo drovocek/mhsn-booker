@@ -25,7 +25,7 @@ public class UserEditForm extends EditForm<User> {
 
     protected void configFields() {
         role.setItems(Role.values());
-        role.setItemLabelGenerator(Role::getRoleName);
+        role.setItemLabelGenerator(Role::role);
     }
 
     @PostConstruct
