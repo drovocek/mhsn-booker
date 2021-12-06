@@ -5,11 +5,11 @@ import com.vaadin.flow.component.ComponentEvent;
 import lombok.Getter;
 
 @Getter
-public class DeleteEvent extends ComponentEvent<Component> {
+public class DeleteEvent<T> extends ComponentEvent<Component> {
 
-    private Object deleted;
+    private final T deleted;
 
-    public DeleteEvent(Component source, Object deleted) {
+    public DeleteEvent(Component source, T deleted) {
         super(source, false);
         this.deleted = deleted;
     }
