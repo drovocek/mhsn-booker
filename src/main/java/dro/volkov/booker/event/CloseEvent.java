@@ -5,9 +5,9 @@ import com.vaadin.flow.component.ComponentEvent;
 import lombok.Getter;
 
 @Getter
-public class CancelEvent extends ComponentEvent<Component> {
+public class CloseEvent extends ComponentEvent<Component> {
 
-    public CancelEvent(Component source) {
+    public CloseEvent(Component source) {
         super(source, false);
     }
 }

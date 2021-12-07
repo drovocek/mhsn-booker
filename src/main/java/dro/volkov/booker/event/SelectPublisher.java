@@ -8,7 +8,11 @@ import java.io.Serializable;
 
 public interface SelectPublisher<T> extends Serializable {
 
-    default void fireSelectEventToUI(T selected) {
+    default void fireSelectEvent(T selected) {
+        ComponentUtil.fireEvent((Component) this, new SelectEvent<>((Component) this, selected));
+    }
+
+    default void fireUISelectEvent(T selected) {
         ComponentUtil.fireEvent(UI.getCurrent(), new SelectEvent<>((Component) this, selected));
     }
 }

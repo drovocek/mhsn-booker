@@ -1,8 +1,5 @@
 package dro.volkov.booker;
 
-import dro.volkov.booker.security.service.SecurityService;
-import dro.volkov.booker.expense.views.dashboard.DashboardView;
-import dro.volkov.booker.expense.views.ExpenseRootView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -12,6 +9,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
+import dro.volkov.booker.expense.views.ExpenseRootView;
+import dro.volkov.booker.expense.views.ExpenseRootView2;
+import dro.volkov.booker.expense.views.dashboard.DashboardView;
+import dro.volkov.booker.security.service.SecurityService;
 import dro.volkov.booker.user.data.entity.Role;
 import dro.volkov.booker.user.view.UserRootView;
 
@@ -45,6 +46,9 @@ public class MainLayout extends AppLayout {
         RouterLink listLink = new RouterLink("Expenses", ExpenseRootView.class);
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
 
+        RouterLink listLink2 = new RouterLink("Expenses2", ExpenseRootView2.class);
+        listLink.setHighlightCondition(HighlightConditions.sameLocation());
+
         RouterLink usersLink = new RouterLink("Users", UserRootView.class);
         usersLink.setHighlightCondition(HighlightConditions.sameLocation());
         usersLink.setVisible(securityService.hasRole(Role.ADMIN));
@@ -54,6 +58,7 @@ public class MainLayout extends AppLayout {
 
         addToDrawer(new VerticalLayout(
                 listLink,
+                listLink2,
                 usersLink,
                 dashboardLink
         ));

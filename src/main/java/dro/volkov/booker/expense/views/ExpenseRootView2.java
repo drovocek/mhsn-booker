@@ -9,8 +9,9 @@ import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.spring.annotation.UIScope;
 import dro.volkov.booker.MainLayout;
 import dro.volkov.booker.expense.data.entity.Expense;
+import dro.volkov.booker.general.service.FilterCrudService;
 import dro.volkov.booker.general.view.CustomGrid;
-import dro.volkov.booker.general.view.EditForm;
+import dro.volkov.booker.general.view.EditForm2;
 import dro.volkov.booker.general.view.FilterForm;
 import lombok.RequiredArgsConstructor;
 
@@ -20,27 +21,31 @@ import javax.annotation.security.PermitAll;
 @RequiredArgsConstructor
 @PermitAll
 @UIScope
-@Route(value = "expenses", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
-@PageTitle("Expense | Booker")
+@Route(value = "trt", layout = MainLayout.class)
+@RouteAlias(value = "343", layout = MainLayout.class)
+@PageTitle("Expense2 | Booker2")
 public class ExpenseRootView2 extends HorizontalLayout {
 
     private final FilterForm<Expense> filterForm;
-    private final CustomGrid<Expense> gridView;
-    private final EditForm<Expense> editForm;
+    private final EditForm2<Expense> editForm;
+    private final FilterCrudService<Expense> service;
+
+    private CustomGrid<Expense> gridView;
 
     @PostConstruct
     public void initView() {
+        gridView = new CustomGrid<>(service, Expense.class);
         add(new VerticalLayout(filterForm, getContentView()));
     }
 
     protected Component getContentView() {
-        HorizontalLayout content = new HorizontalLayout(gridView, editForm);
-        content.setFlexGrow(2, gridView);
-        content.setFlexGrow(1, editForm);
-        content.addClassNames("content");
-        content.setSizeFull();
-        return content;
+        return new HorizontalLayout() {{
+            setFlexGrow(2, gridView);
+            setFlexGrow(1, editForm);
+            addClassNames("content");
+            setSizeFull();
+            add(gridView, editForm);
+        }};
     }
 }
 

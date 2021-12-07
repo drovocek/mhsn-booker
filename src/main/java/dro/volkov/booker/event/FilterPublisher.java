@@ -5,11 +5,14 @@ import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.UI;
 
 import java.io.Serializable;
-import java.util.List;
 
 public interface FilterPublisher<T> extends Serializable {
 
-    default void fireFilterEventToUI(List<T> filtered) {
-        ComponentUtil.fireEvent(UI.getCurrent(), new FilterEvent<>((Component) this, filtered));
+    default void fireFilterEvent(T filter) {
+        ComponentUtil.fireEvent((Component) this, new FilterEvent<>((Component) this, filter));
+    }
+
+    default void fireUIFilterEvent(T filter) {
+        ComponentUtil.fireEvent(UI.getCurrent(), new FilterEvent<>((Component) this, filter));
     }
 }

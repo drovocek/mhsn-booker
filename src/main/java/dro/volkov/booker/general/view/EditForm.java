@@ -125,7 +125,6 @@ public abstract class EditForm<T> extends FormLayout {
         FormDeleteEvent(EditForm<T> source, T entity) {
             super(source, entity);
         }
-
     }
 
     public static class FormCloseEvent<T> extends EditFormEvent<T> {

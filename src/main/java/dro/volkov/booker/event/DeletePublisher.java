@@ -8,7 +8,11 @@ import java.io.Serializable;
 
 public interface DeletePublisher<T> extends Serializable {
 
-    default void fireDeleteEventToUI(T deleted) {
+    default void fireDeleteEvent(T deleted) {
+        ComponentUtil.fireEvent((Component) this, new DeleteEvent<>((Component) this, deleted));
+    }
+
+    default void fireUIDeleteEvent(T deleted) {
         ComponentUtil.fireEvent(UI.getCurrent(), new DeleteEvent<>((Component) this, deleted));
     }
 }

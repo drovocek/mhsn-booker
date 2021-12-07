@@ -5,24 +5,22 @@ import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.shared.Registration;
 import dro.volkov.booker.event.*;
+import dro.volkov.booker.expense.data.entity.HasFilterField;
 import dro.volkov.booker.general.service.FilterCrudService;
-
-import java.util.List;
 
 import static dro.volkov.booker.util.NotificationUtil.noticeSSS;
 
-
-public class CustomGrid<T> extends Grid<T> implements SelectPublisher<T>, DeleteNotifier<T>, SaveNotifier<T>, FilterNotifier<T>, CancelNotifier {
+public class CustomGrid<T extends HasFilterField> extends Grid<T> implements SelectPublisher<T>, DeleteNotifier<T>, SaveNotifier<T>, FilterNotifier<T>, CloseNotifier {
 
     protected final FilterCrudService<T> service;
 
     protected Registration deleteRegistration;
     protected Registration saveRegistration;
-    protected Registration cancelRegistration;
+    protected Registration closeRegistration;
     protected Registration filterRegistration;
 
-    public CustomGrid(FilterCrudService<T> service) {
-        super();
+    public CustomGrid(FilterCrudService<T> service,Class<T> beanType) {
+        super(beanType);
         this.service = service;
         configGrid();
     }
@@ -31,16 +29,19 @@ public class CustomGrid<T> extends Grid<T> implements SelectPublisher<T>, Delete
         addClassNames("filter-crud-grid");
         setSizeFull();
         getColumns().forEach(col -> col.setAutoWidth(true));
-        asSingleSelect().addValueChangeListener(event -> fireSelectEventToUI(event.getValue()));
+        asSingleSelect().addValueChangeListener(event -> fireUISelectEvent(event.getValue()));
     }
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-        deleteRegistration = addDeleteListener(deleteEvent -> deleteEntity(deleteEvent.getDeleted()));
-        saveRegistration = addSaveListener(saveEvent -> saveEntity(saveEvent.getPersist()));
-        cancelRegistration = addCancelListener(cancelEvent -> cancelSelect());
-        filterRegistration = addFilterListener(filterEvent -> updateList(filterEvent.getFiltered()));
+        deleteRegistration = addUIDeleteListener(deleteEvent -> deleteEntity(deleteEvent.getDeleted()));
+        saveRegistration = addUISaveListener(saveEvent -> saveEntity(saveEvent.getPersist()));
+        closeRegistration = addUICloseListener(cancelEvent -> cancelSelect());
+        filterRegistration = addUIFilterListener(filterEvent -> {
+            System.out.println("CATCH");
+            updateList(filterEvent.getFilter());
+        });
     }
 
     @Override
@@ -68,7 +69,7 @@ public class CustomGrid<T> extends Grid<T> implements SelectPublisher<T>, Delete
         asSingleSelect().clear();
     }
 
-    protected void updateList(List<T> filtered) {
-        setItems(filtered);
+    protected void updateList(T filter) {
+        setItems(service.findByFilter(filter.getFilterField()));
     }
 }

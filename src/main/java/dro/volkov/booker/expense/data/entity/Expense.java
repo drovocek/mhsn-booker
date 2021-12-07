@@ -6,7 +6,9 @@ import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.PrePersist;
+import javax.persistence.Transient;
 import javax.validation.constraints.Min;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -15,13 +17,13 @@ import java.time.ZoneId;
 @Getter
 @ToString
 @Entity
-public class Expense extends AbstractEntity {
+public class Expense extends AbstractEntity implements HasFilterField, HasNewCheck, Serializable {
 
-//    @NotNull
+    //    @NotNull
     @Min(1)
     private BigDecimal price;
 
-//    @Length(min = 3, max = 50)
+    //    @Length(min = 3, max = 50)
     private String description;
 
     private LocalDate date;
@@ -42,10 +44,18 @@ public class Expense extends AbstractEntity {
 //    @JsonIgnoreProperties({"employees"})
 //    @Formula("(select count(c.id) from Contact c where c.company_id = id)")
 
+    @Transient
+    private String filterField;
+
     @PrePersist
     private void setDateIfNotSet() {
         if (date == null) {
             date = LocalDate.now(ZoneId.of("Europe/Moscow"));
         }
+    }
+
+    @Override
+    public boolean isNew() {
+        return getId() == null;
     }
 }
