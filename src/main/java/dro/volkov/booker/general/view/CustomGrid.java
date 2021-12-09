@@ -60,7 +60,7 @@ public class CustomGrid<T extends HasFilterField> extends Grid<T> implements Sel
 
     protected void deleteEntity(T deleted) {
         service.delete(deleted);
-        //  updateList();
+        // updateList();
         //  form.close();
         noticeSSS("Delete succeeded");
     }

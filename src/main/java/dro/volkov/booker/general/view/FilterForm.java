@@ -1,44 +1,68 @@
 package dro.volkov.booker.general.view;
 
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.shared.Registration;
+import dro.volkov.booker.event.DeleteNotifier;
 import dro.volkov.booker.event.FilterPublisher;
 import dro.volkov.booker.event.SelectPublisher;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.SerializationUtils;
 
-import javax.annotation.PostConstruct;
 import java.io.Serializable;
 
-@RequiredArgsConstructor
-public abstract class FilterForm<T extends Serializable> extends HorizontalLayout implements FilterPublisher<T>, SelectPublisher<T> {
+public abstract class FilterForm<T extends Serializable>
+        extends HorizontalLayout
+        implements FilterPublisher<T>, SelectPublisher<T>, DeleteNotifier<T> {
 
     private final Class<T> beanType;
-    private Binder<T> binder;
-    private T formEntity;
+    private final Binder<T> binder;
+    private final T formEntity;
 
     protected TextField filterField;
     protected Button addButton;
 
-    @PostConstruct
+    private Registration deleteRegistration;
+
+    public FilterForm(Class<T> beanType) {
+        this.beanType = beanType;
+        this.binder = new BeanValidationBinder<>(beanType);
+        this.formEntity = getNewInstance();
+        initView();
+    }
+
     protected void initView() {
         addClassName("toolbar");
         filterField = constructFilterField();
         addButton = constructAddButton();
-        initBinder();
         add(filterField, addButton);
+        binder.bindInstanceFields(this);
     }
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
+        deleteRegistration = addUIDeleteListener(deleteEvent -> pushFilter());
         pushFilter();
+    }
+
+    protected void pushFilter() {
+        if (binder.writeBeanIfValid(formEntity)) {
+            T formEntityClone = SerializationUtils.clone(formEntity);
+            fireUIFilterEvent(formEntityClone);
+        }
+    }
+
+    @Override
+    protected void onDetach(DetachEvent detachEvent) {
+        super.onDetach(detachEvent);
+        deleteRegistration.remove();
     }
 
     protected TextField constructFilterField() {
@@ -53,25 +77,16 @@ public abstract class FilterForm<T extends Serializable> extends HorizontalLayou
     }
 
     protected Button constructAddButton() {
-        return new Button() {{
-            setText("Add");
-            addClickListener(clickEvent -> fireUISelectEvent(null));
-        }};
-    }
-
-    protected void pushFilter(){
-        System.out.println("PUSH");
-        if (binder.writeBeanIfValid(formEntity)) {
-            System.out.println("PUSH2");
-            T formEntityClone = SerializationUtils.clone(formEntity);
-            fireUIFilterEvent(formEntityClone);
-        }
+        return new Button() {
+            {
+                setText("Add");
+                addClickListener(clickEvent -> fireUISelectEvent(null));
+            }
+        };
     }
 
     @SneakyThrows
-    protected void initBinder() {
-        formEntity = beanType.getDeclaredConstructor().newInstance();
-        binder = new BeanValidationBinder<>(beanType);
-        binder.bindInstanceFields(this);
+    protected T getNewInstance() {
+        return beanType.getConstructor().newInstance();
     }
 }

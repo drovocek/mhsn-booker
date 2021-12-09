@@ -24,7 +24,7 @@ import javax.annotation.security.PermitAll;
 @Route(value = "trt", layout = MainLayout.class)
 @RouteAlias(value = "343", layout = MainLayout.class)
 @PageTitle("Expense2 | Booker2")
-public class ExpenseRootView2 extends HorizontalLayout {
+public class ExpenseRootView2 extends VerticalLayout {
 
     private final FilterForm<Expense> filterForm;
     private final EditForm2<Expense> editForm;
@@ -34,18 +34,22 @@ public class ExpenseRootView2 extends HorizontalLayout {
 
     @PostConstruct
     public void initView() {
+        addClassName("root-grid-view");
+        setSizeFull();
         gridView = new CustomGrid<>(service, Expense.class);
-        add(new VerticalLayout(filterForm, getContentView()));
+        add(filterForm, createEntityView());
     }
 
-    protected Component getContentView() {
-        return new HorizontalLayout() {{
-            setFlexGrow(2, gridView);
-            setFlexGrow(1, editForm);
-            addClassNames("content");
-            setSizeFull();
-            add(gridView, editForm);
-        }};
+    protected Component createEntityView() {
+        return new HorizontalLayout() {
+            {
+                addClassNames("content");
+                add(gridView, editForm);
+                setFlexGrow(2, gridView);
+                setFlexGrow(1, editForm);
+                setSizeFull();
+            }
+        };
     }
 }
 
