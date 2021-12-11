@@ -32,4 +32,12 @@ public class UserCrudService implements FilterCrudService<User> {
     public Optional<User> getByEmail(String email) {
         return userRepository.findUserByEmail(email);
     }
+
+    public boolean emailNotExist(String email) {
+        return getByEmail(email).isEmpty();
+    }
+
+    public boolean usernameNotExist(String username) {
+        return userRepository.findUserByUsername(username).isEmpty();
+    }
 }

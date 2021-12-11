@@ -16,8 +16,7 @@ public abstract class RootView<T extends HasNewCheck & Serializable & HasFilterF
     protected final EditForm<T> editForm;
     protected final FilterCrudService<T> service;
     protected final Class<T> beanType;
-
-    protected CustomGrid<T> grid;
+    protected final CustomGrid<T> grid;
 
     public RootView(FilterForm<T> filterForm, EditForm<T> editForm,
                     FilterCrudService<T> service, Class<T> beanType) {
@@ -25,20 +24,19 @@ public abstract class RootView<T extends HasNewCheck & Serializable & HasFilterF
         this.editForm = editForm;
         this.service = service;
         this.beanType = beanType;
+        this.grid = new CustomGrid<>(service, beanType);
         initView();
     }
 
     protected void initView() {
         addClassName("root-grid-view");
         setSizeFull();
-        grid = new CustomGrid<>(service, beanType);
         updateGridColumns();
         configGrid();
         add(filterForm, createEntityView());
     }
 
     protected void updateGridColumns() {
-
     }
 
     protected void configGrid() {

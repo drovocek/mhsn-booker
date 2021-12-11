@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import dro.volkov.booker.expense.data.entity.AbstractEntity;
 import dro.volkov.booker.general.data.entity.HasFilterField;
 import dro.volkov.booker.general.data.entity.HasNewCheck;
-import dro.volkov.booker.general.validation.UniqueEmail;
 import dro.volkov.booker.user.data.dict.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,8 +19,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-import static dro.volkov.booker.util.StrUtil.asUsername;
-
 @Setter
 @Getter
 @ToString
@@ -32,7 +29,6 @@ public class User extends AbstractEntity implements HasFilterField, HasNewCheck,
 
     @NotNull
     @Email
-    @UniqueEmail
     @Column(name = "EMAIL", unique = true)
     private String email;
 
@@ -85,9 +81,6 @@ public class User extends AbstractEntity implements HasFilterField, HasNewCheck,
         }
         if (password == null) {
             this.password = RandomStringUtils.random(32);
-        }
-        if (email != null) {
-            this.username = asUsername(email);
         }
     }
 

@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static dro.volkov.booker.util.StrUtil.asUsername;
+
 @SpringComponent
 public class UserDataGenerator {
 
@@ -39,10 +41,11 @@ public class UserDataGenerator {
             userGenerator.setData(User::setLastAccess, DataType.DATETIME_LAST_30_DAYS);
             userGenerator.setData(User::setRegistration, DataType.DATETIME_LAST_1_YEAR);
 
-            List<User> users = userGenerator.create(50, seed).stream()
+            List<User> users = userGenerator.create(20, seed).stream()
                     .peek(user -> user.setRole(Role.USER))
                     .peek(user -> user.setEnabled(true))
                     .peek(user -> user.setActive(true))
+                    .peek(user -> user.setUsername(asUsername(user.getEmail())))
                     .peek(user -> user.setPassword(passwordEncoder.encode("user")))
                     .collect(Collectors.toList());
 
@@ -51,12 +54,14 @@ public class UserDataGenerator {
                     Role.ADMIN);
             admin.setActive(true);
             admin.setEnabled(true);
+            admin.setUsername(asUsername(admin.getEmail()));
 
             User user = new User("user@user.com",
                     passwordEncoder.encode("user"),
                     Role.USER);
             user.setActive(true);
             user.setEnabled(true);
+            user.setUsername(asUsername(user.getEmail()));
 
             users.add(admin);
             users.add(user);
