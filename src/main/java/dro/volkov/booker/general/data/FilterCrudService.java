@@ -1,4 +1,4 @@
-package dro.volkov.booker.general.service;
+package dro.volkov.booker.general.data;
 
 import java.util.List;
 

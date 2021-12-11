@@ -1,4 +1,4 @@
-package dro.volkov.booker.expense.data.repository;
+package dro.volkov.booker.expense.data;
 
 import dro.volkov.booker.expense.data.entity.Expense;
 import org.springframework.data.jpa.repository.JpaRepository;

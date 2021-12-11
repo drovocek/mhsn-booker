@@ -5,8 +5,8 @@ import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.shared.Registration;
 import dro.volkov.booker.event.*;
-import dro.volkov.booker.expense.data.entity.HasFilterField;
-import dro.volkov.booker.general.service.FilterCrudService;
+import dro.volkov.booker.general.data.entity.HasFilterField;
+import dro.volkov.booker.general.data.FilterCrudService;
 
 import static dro.volkov.booker.util.NotificationUtil.noticeSSS;
 
@@ -41,10 +41,7 @@ public class CustomGrid<T extends HasFilterField> extends Grid<T> implements Sel
             getDataProvider().refreshAll();
         });
         closeRegistration = addUICloseListener(cancelEvent -> cancelSelect());
-        filterRegistration = addUIFilterListener(filterEvent -> {
-            System.out.println("CATCH");
-            updateList(filterEvent.getFilter());
-        });
+        filterRegistration = addUIFilterListener(filterEvent -> updateList(filterEvent.getFilter()));
     }
 
     @Override

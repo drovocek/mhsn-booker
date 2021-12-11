@@ -1,5 +1,6 @@
 package dro.volkov.booker;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -9,11 +10,11 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
+import dro.volkov.booker.category.view.CategoryRootView;
 import dro.volkov.booker.expense.views.ExpenseRootView;
-import dro.volkov.booker.expense.views.ExpenseRootView2;
 import dro.volkov.booker.expense.views.dashboard.DashboardView;
 import dro.volkov.booker.security.service.SecurityService;
-import dro.volkov.booker.user.data.entity.Role;
+import dro.volkov.booker.user.data.dict.Role;
 import dro.volkov.booker.user.view.UserRootView;
 
 public class MainLayout extends AppLayout {
@@ -22,45 +23,45 @@ public class MainLayout extends AppLayout {
 
     public MainLayout(SecurityService securityService) {
         this.securityService = securityService;
-        createHeader();
-        createDrawer();
+        addToNavbar(createHeader());
+        addToDrawer(createDrawer());
     }
 
-    private void createHeader() {
-        H1 logo = new H1("Booker");
-        logo.addClassNames("text-l", "m-m");
+    private Component createHeader() {
+        return new HorizontalLayout() {{
+            H1 logo = new H1("Booker");
+            logo.addClassNames("text-l", "m-m");
+            Button logout = new Button("Log out", e -> securityService.logout());
+            add(new DrawerToggle(), logo, logout);
 
-        Button logout = new Button("Log out", e -> securityService.logout());
-
-        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, logout);
-
-        header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
-        header.expand(logo);
-        header.setWidth("100%");
-        header.addClassNames("py-0", "px-m");
-
-        addToNavbar(header);
+            setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+            expand(logo);
+            setWidth("100%");
+            addClassNames("py-0", "px-m");
+        }};
     }
 
-    private void createDrawer() {
-        RouterLink listLink = new RouterLink("Expenses", ExpenseRootView.class);
-        listLink.setHighlightCondition(HighlightConditions.sameLocation());
+    private Component createDrawer() {
+        return new VerticalLayout() {{
+            RouterLink expenseLink = new RouterLink("Expenses", ExpenseRootView.class);
+            expenseLink.setHighlightCondition(HighlightConditions.sameLocation());
 
-        RouterLink listLink2 = new RouterLink("Expenses2", ExpenseRootView2.class);
-        listLink.setHighlightCondition(HighlightConditions.sameLocation());
+            RouterLink categoryLink = new RouterLink("Category", CategoryRootView.class);
+            categoryLink.setHighlightCondition(HighlightConditions.sameLocation());
 
-        RouterLink usersLink = new RouterLink("Users", UserRootView.class);
-        usersLink.setHighlightCondition(HighlightConditions.sameLocation());
-        usersLink.setVisible(securityService.hasRole(Role.ADMIN));
+            RouterLink dashboardLink = new RouterLink("Dashboard", DashboardView.class);
+            dashboardLink.setHighlightCondition(HighlightConditions.sameLocation());
 
-        RouterLink dashboardLink = new RouterLink("Dashboard", DashboardView.class);
-        dashboardLink.setHighlightCondition(HighlightConditions.sameLocation());
+            RouterLink usersLink = new RouterLink("Users", UserRootView.class);
+            usersLink.setHighlightCondition(HighlightConditions.sameLocation());
+            usersLink.setVisible(securityService.hasRole(Role.ADMIN));
 
-        addToDrawer(new VerticalLayout(
-                listLink,
-                listLink2,
-                usersLink,
-                dashboardLink
-        ));
+            add(
+                    expenseLink,
+                    categoryLink,
+                    dashboardLink,
+                    usersLink
+            );
+        }};
     }
 }

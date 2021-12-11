@@ -1,37 +1,66 @@
 package dro.volkov.booker.general.view;
 
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentEvent;
-import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import dro.volkov.booker.event.ClosePublisher;
+import dro.volkov.booker.event.DeletePublisher;
+import dro.volkov.booker.event.SavePublisher;
+import dro.volkov.booker.event.SelectNotifier;
+import dro.volkov.booker.general.data.entity.HasNewCheck;
+import lombok.SneakyThrows;
 
-@RequiredArgsConstructor
-public abstract class EditForm<T> extends FormLayout {
+import static com.vaadin.flow.component.button.ButtonVariant.*;
 
-    private final Class<T> beanType;
-    private Binder<T> binder;
-    private T entity;
+public abstract class EditForm<T extends HasNewCheck> extends FormLayout
+        implements SavePublisher<T>, DeletePublisher<T>, ClosePublisher,
+        SelectNotifier<T> {
 
-    private final H1 title = new H1();
-    private final Button save = new Button("Save");
-    private final Button delete = new Button("Delete");
-    private final Button close = new Button("Cancel");
+    protected final Class<T> beanType;
+    protected final Binder<T> binder;
+
+    protected T formEntity;
+    protected Registration selectRegistration;
+    protected H1 title = new H1();
+
+    public EditForm(Class<T> beanType){
+        this.beanType = beanType;
+        this.binder = new BeanValidationBinder<>(beanType);
+        initView();
+    }
 
     protected void initView() {
+        addClassName("edit-form");
+        setWidth("25em");
         configFields();
-        initBinder();
-        configView();
+        close();
+    }
+
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+        selectRegistration = addUISelectListener(selectEvent -> {
+            T selected = selectEvent.getSelected();
+            if (selected == null) {
+                close();
+            } else {
+                open(selected);
+            }
+        });
+    }
+
+    @Override
+    protected void onDetach(DetachEvent detachEvent) {
+        super.onDetach(detachEvent);
+        selectRegistration.remove();
     }
 
     protected void addFields(Component... components) {
@@ -39,107 +68,63 @@ public abstract class EditForm<T> extends FormLayout {
         add(title);
         add(components);
         add(createButtonsLayout());
-    }
-
-    protected void configFields() {
-    }
-
-    protected void initBinder() {
-        binder = new BeanValidationBinder<>(beanType);
         binder.bindInstanceFields(this);
     }
 
-    protected void configView() {
-        addClassName("edit-form");
+    protected abstract void configFields();
+
+    protected void setFormEntity(T formEntity) {
+        this.formEntity = formEntity == null ? getNewInstance() : formEntity;
+        binder.readBean(formEntity);
     }
 
-    protected void setEntity(T entity) {
-        this.entity = entity;
-        binder.readBean(entity);
+    @SneakyThrows
+    protected T getNewInstance() {
+        return beanType.getConstructor().newInstance();
     }
 
     protected Component createButtonsLayout() {
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        return new HorizontalLayout() {
+            {
+                final Button save = new Button("Save");
+                final Button delete = new Button("Delete");
+                final Button close = new Button("Cancel");
 
-        save.addClickShortcut(Key.ENTER);
-        close.addClickShortcut(Key.ESCAPE);
+                save.addThemeVariants(LUMO_PRIMARY);
+                delete.addThemeVariants(LUMO_ERROR);
+                close.addThemeVariants(LUMO_TERTIARY);
 
-        save.addClickListener(event -> validateAndSave());
-        delete.addClickListener(event -> fireEvent(new FormDeleteEvent<>(this, entity)));
-        close.addClickListener(event -> close());
+                save.addClickShortcut(Key.ENTER);
+                close.addClickShortcut(Key.ESCAPE);
 
-        binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
-        return new HorizontalLayout(save, delete, close);
+                save.addClickListener(event -> validateAndPushSave());
+                delete.addClickListener(event -> fireUIDeleteEvent(formEntity));
+                close.addClickListener(event -> fireUICloseEvent());
+
+                binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
+                add(save, delete, close);
+            }
+        };
     }
 
-    protected void asEditForm(boolean asEdit) {
-        delete.setVisible(asEdit);
-        if (asEdit) {
-            title.setText("Edit");
-        } else {
-            title.setText("Add");
-        }
-    }
-
-    protected void validateAndSave() {
-        try {
-            binder.writeBean(entity);
-            fireEvent(new FormSaveEvent<>(this, entity));
-        } catch (ValidationException e) {
-            e.printStackTrace();
+    protected void validateAndPushSave() {
+        if (binder.writeBeanIfValid(formEntity)) {
+            fireUISaveEvent(formEntity);
+            close();
         }
     }
 
     protected void open(T entity) {
-        setEntity(entity);
+        setFormEntity(entity);
         setVisible(true);
-        fireEvent(new FormOpenEvent<>(this));
+        if (formEntity.isNew()) {
+            title.setText("Add");
+        } else {
+            title.setText("Edit");
+        }
     }
 
     protected void close() {
-        setEntity(null);
         setVisible(false);
-        fireEvent(new FormCloseEvent<>(this));
-    }
-
-    public static abstract class EditFormEvent<T> extends ComponentEvent<EditForm<T>> {
-
-        @Getter
-        private final T entity;
-
-        protected EditFormEvent(EditForm<T> source, T entity) {
-            super(source, false);
-            this.entity = entity;
-        }
-    }
-
-    public static class FormSaveEvent<T> extends EditFormEvent<T> {
-        FormSaveEvent(EditForm<T> source, T entity) {
-            super(source, entity);
-        }
-    }
-
-    public static class FormDeleteEvent<T> extends EditFormEvent<T> {
-        FormDeleteEvent(EditForm<T> source, T entity) {
-            super(source, entity);
-        }
-    }
-
-    public static class FormCloseEvent<T> extends EditFormEvent<T> {
-        FormCloseEvent(EditForm<T> source) {
-            super(source, null);
-        }
-    }
-
-    public static class FormOpenEvent<T> extends EditFormEvent<T> {
-        FormOpenEvent(EditForm<T> source) {
-            super(source, null);
-        }
-    }
-
-    public <U extends ComponentEvent<?>> Registration addListener(Class<U> eventType, ComponentEventListener<U> listener) {
-        return getEventBus().addListener(eventType, listener);
     }
 }

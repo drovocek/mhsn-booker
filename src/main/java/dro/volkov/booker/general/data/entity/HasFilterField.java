@@ -1,4 +1,4 @@
-package dro.volkov.booker.expense.data.entity;
+package dro.volkov.booker.general.data.entity;
 
 public interface HasFilterField {
 

@@ -1,9 +1,9 @@
 package dro.volkov.booker.security.service;
 
 import dro.volkov.booker.MailService;
-import dro.volkov.booker.user.data.entity.Role;
+import dro.volkov.booker.user.data.dict.Role;
 import dro.volkov.booker.user.data.entity.User;
-import dro.volkov.booker.user.data.service.UserCrudService;
+import dro.volkov.booker.user.data.UserCrudService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

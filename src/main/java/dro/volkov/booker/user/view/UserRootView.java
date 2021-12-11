@@ -1,49 +1,73 @@
 package dro.volkov.booker.user.view;
 
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import dro.volkov.booker.MainLayout;
-import dro.volkov.booker.general.service.FilterCrudService;
+import dro.volkov.booker.general.data.FilterCrudService;
 import dro.volkov.booker.general.view.EditForm;
-import dro.volkov.booker.general.view.RootGridView;
-import dro.volkov.booker.security.service.AuthService;
+import dro.volkov.booker.general.view.FilterForm;
+import dro.volkov.booker.general.view.RootView;
 import dro.volkov.booker.user.data.entity.User;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.security.RolesAllowed;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Comparator;
+
+import static dro.volkov.booker.general.fabric.ComponentFabric.asChecked;
+import static dro.volkov.booker.general.fabric.ComponentFabric.asLabel;
 
 @UIScope
 @RolesAllowed("ROLE_ADMIN")
 @Route(value = "users", layout = MainLayout.class)
 @PageTitle("Users | Booker")
-public class UserRootView extends RootGridView<User> {
+public class UserRootView extends RootView<User> {
 
-    private final AuthService authService;
-
-    @Value("${app.root-user-mail}")
-    private String rootUserEmail;
-
-    public UserRootView(@Qualifier("userCrudService") FilterCrudService<User> service,
-                        @Qualifier("userEditForm") EditForm<User> form,
-                        AuthService authService) {
-        super(service, form, User.class);
-        this.authService = authService;
+    protected UserRootView(FilterForm<User> filterForm,
+                           EditForm<User> editForm,
+                           FilterCrudService<User> service) {
+        super(filterForm, editForm, service, User.class);
     }
 
     @Override
-    protected void configureGrid() {
-        super.configureGrid();
-        grid.setColumns("enabled", "role", "username", "email", "registrationDate", "active");
-    }
+    protected void updateGridColumns() {
+        super.updateGridColumns();
+        grid.removeAllColumns();
 
-    @Override
-    protected void saveEntity(EditForm.FormSaveEvent<User> event) {
-        User persist = event.getEntity();
-        if (persist.isNew()) {
-            authService.sendToEmailActivationLink(persist.getEmail());
-        }
-        super.saveEntity(event);
+        grid.addColumn(new ComponentRenderer<>(user -> asChecked(user.isActive())))
+                .setComparator(Comparator.comparing(User::getRole))
+                .setHeader("Active");
+
+        grid.addColumn(new ComponentRenderer<>(user -> asChecked(user.isEnabled())))
+                .setComparator(Comparator.comparing(User::getRole))
+                .setHeader("Enabled");
+
+        grid.addColumn("username")
+                .setHeader("Username");
+
+        grid.addColumn("email")
+                .setHeader("Email");
+
+        grid.addColumn(new ComponentRenderer<>(user -> asLabel(user.getRole())))
+                .setComparator(Comparator.comparing(User::getRole))
+                .setHeader("Category");
+
+        grid.addColumn(new LocalDateTimeRenderer<>(
+                User::getLastAccess,
+                DateTimeFormatter
+                        .ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM)
+                        .withZone(ZoneId.of("Europe/Moscow"))))
+                .setComparator(Comparator.comparing(User::getLastAccess))
+                .setHeader("Last access");
+
+        grid.addColumn(new LocalDateTimeRenderer<>(
+                        User::getRegistration,
+                        DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)))
+                .setComparator(Comparator.comparing(User::getRegistration))
+                .setHeader("Registration");
     }
 }

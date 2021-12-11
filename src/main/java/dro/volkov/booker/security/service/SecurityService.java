@@ -2,7 +2,7 @@ package dro.volkov.booker.security.service;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinServletRequest;
-import dro.volkov.booker.user.data.entity.Role;
+import dro.volkov.booker.user.data.dict.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,7 +38,6 @@ public class SecurityService {
             return false;
         }
         return authenticatedUser.getAuthorities().stream()
-                .peek(user-> System.out.println(user.getAuthority()))
                 .anyMatch(user -> user.getAuthority().equals(role.role()));
     }
 }

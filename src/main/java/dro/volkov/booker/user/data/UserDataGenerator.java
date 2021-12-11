@@ -1,11 +1,10 @@
-package dro.volkov.booker.user.data.generator;
+package dro.volkov.booker.user.data;
 
 import com.vaadin.exampledata.DataType;
 import com.vaadin.exampledata.ExampleDataGenerator;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import dro.volkov.booker.user.data.entity.Role;
+import dro.volkov.booker.user.data.dict.Role;
 import dro.volkov.booker.user.data.entity.User;
-import dro.volkov.booker.user.data.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,8 @@ public class UserDataGenerator {
             logger.info("User generating demo data");
             ExampleDataGenerator<User> userGenerator = new ExampleDataGenerator<>(User.class, LocalDateTime.now());
             userGenerator.setData(User::setEmail, DataType.EMAIL);
-            userGenerator.setData(User::setRegistrationDate, DataType.DATETIME_NEXT_10_YEARS);
+            userGenerator.setData(User::setLastAccess, DataType.DATETIME_LAST_30_DAYS);
+            userGenerator.setData(User::setRegistration, DataType.DATETIME_LAST_1_YEAR);
 
             List<User> users = userGenerator.create(50, seed).stream()
                     .peek(user -> user.setRole(Role.USER))

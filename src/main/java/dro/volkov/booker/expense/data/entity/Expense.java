@@ -1,13 +1,17 @@
 package dro.volkov.booker.expense.data.entity;
 
+import dro.volkov.booker.category.data.entity.Category;
+import dro.volkov.booker.general.data.entity.HasFilterField;
+import dro.volkov.booker.general.data.entity.HasNewCheck;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Entity;
-import javax.persistence.PrePersist;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,20 +25,23 @@ public class Expense extends AbstractEntity implements HasFilterField, HasNewChe
 
     //    @NotNull
     @Min(1)
+    @Column(name = "PRICE")
     private BigDecimal price;
 
-    //    @Length(min = 3, max = 50)
+    @Length(min = 1, max = 200)
+    @Column(name = "DESCRIPTION")
     private String description;
 
+    @Column(name = "DATE")
     private LocalDate date;
 
-//    @NotNull
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "category_id")
-//    private Category category;
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    private String category;
-
+    @NotEmpty
+    @Column(name = "USERNAME" )
     private String username;
 
 //    @ToString.Exclude

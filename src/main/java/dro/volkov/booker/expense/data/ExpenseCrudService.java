@@ -1,8 +1,7 @@
-package dro.volkov.booker.expense.data.service;
+package dro.volkov.booker.expense.data;
 
 import dro.volkov.booker.expense.data.entity.Expense;
-import dro.volkov.booker.expense.data.repository.ExpenseRepository;
-import dro.volkov.booker.general.service.FilterCrudService;
+import dro.volkov.booker.general.data.FilterCrudService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,17 +14,17 @@ public class ExpenseCrudService implements FilterCrudService<Expense> {
     private final ExpenseRepository expenseRepository;
 
     @Override
-    public void delete(Expense contact) {
-        expenseRepository.delete(contact);
+    public void delete(Expense expense) {
+        expenseRepository.delete(expense);
     }
 
     @Override
-    public void save(Expense contact) {
-        if (contact == null) {
+    public void save(Expense expense) {
+        if (expense == null) {
             System.err.println("Contact is null. Are you sure you have connected your form to the application?");
             return;
         }
-        expenseRepository.save(contact);
+        expenseRepository.save(expense);
     }
 
     @Override
@@ -35,14 +34,5 @@ public class ExpenseCrudService implements FilterCrudService<Expense> {
         } else {
             return expenseRepository.search(stringFilter);
         }
-    }
-
-
-    public List<Expense> findAll() {
-        return expenseRepository.findAll();
-    }
-
-    public long countExpense() {
-        return expenseRepository.count();
     }
 }

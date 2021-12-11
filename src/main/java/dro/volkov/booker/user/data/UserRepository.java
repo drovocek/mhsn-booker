@@ -1,4 +1,4 @@
-package dro.volkov.booker.user.data.repository;
+package dro.volkov.booker.user.data;
 
 import dro.volkov.booker.user.data.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("select u from User u " +
             "where lower(u.email) like lower(concat('%', :searchTerm, '%')) " +
-            "or lower(u.registrationDate) like lower(concat('%', :searchTerm, '%'))")
+            "or lower(u.registration) like lower(concat('%', :searchTerm, '%'))")
     List<User> search(@Param("searchTerm") String searchTerm);
 
     Optional<User> findUserByEmail(String email);

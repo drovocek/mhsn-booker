@@ -11,3 +11,20 @@ a[highlight] {
     font-weight: bold;
     text-decoration: underline;
 }
+
+.app-label {
+    border-width: .15em;
+    border-radius: 10px;
+    border-style: solid;
+    display: inline-block;
+    text-align: center;
+    padding: 4px;
+}
+
+.app-round {
+    height: 25px;
+    width: 25px;
+    /*background-color: #bbb;*/
+    /*border-radius: 50%;*/
+    /*display: inline-block;*/
+}

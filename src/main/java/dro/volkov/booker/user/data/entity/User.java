@@ -1,8 +1,11 @@
 package dro.volkov.booker.user.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dro.volkov.booker.expense.data.entity.HasFilterField;
-import dro.volkov.booker.expense.data.entity.HasNewCheck;
+import dro.volkov.booker.expense.data.entity.AbstractEntity;
+import dro.volkov.booker.general.data.entity.HasFilterField;
+import dro.volkov.booker.general.data.entity.HasNewCheck;
+import dro.volkov.booker.general.validation.UniqueEmail;
+import dro.volkov.booker.user.data.dict.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,42 +28,46 @@ import static dro.volkov.booker.util.StrUtil.asUsername;
 @NoArgsConstructor
 @Entity
 @Table(name = "user_sec_data")
-public class User implements HasFilterField, HasNewCheck, Serializable {
-
-    @NotNull
-    @Id
-    @GeneratedValue
-    private Integer id;
+public class User extends AbstractEntity implements HasFilterField, HasNewCheck, Serializable {
 
     @NotNull
     @Email
+    @UniqueEmail
+    @Column(name = "EMAIL", unique = true)
     private String email;
 
     @NotNull
     @NotEmpty
+    @Column(name = "USERNAME", unique = true)
     private String username;
 
     @NotNull
     @NotEmpty
     @JsonIgnore
+    @Column(name = "PASSWORD")
     private String password;
+
+    @NotNull
+    @Enumerated
+    @Column(name = "ROLE")
+    private Role role;
+
+    @NotNull
+    @Column(name = "REGISTRATION_DATE")
+    private LocalDateTime registration;
+
+    @Column(name = "LAST_ACCESS_DATE")
+    private LocalDateTime lastAccess;
+
+    @Column(name = "ACTIVE")
+    private boolean active;
+
+    @Column(name = "ENABLED")
+    private boolean enabled;
 
     @Transient
     @JsonIgnore
     private String confirmPassword;
-
-    @NotNull
-    @Enumerated
-    private Role role;
-
-    @NotNull
-    private LocalDateTime registrationDate;
-
-    private LocalDateTime lastAccessDate;
-
-    private boolean active;
-
-    private boolean enabled;
 
     @Transient
     private String filterField;
@@ -72,9 +79,9 @@ public class User implements HasFilterField, HasNewCheck, Serializable {
     }
 
     @PrePersist
-    private void setDateIfNotSet() {
-        if (registrationDate == null) {
-            registrationDate = LocalDateTime.now(ZoneId.of("Europe/Moscow"));
+    private void beforeSave() {
+        if (registration == null) {
+            registration = LocalDateTime.now(ZoneId.of("Europe/Moscow"));
         }
         if (password == null) {
             this.password = RandomStringUtils.random(32);
@@ -86,6 +93,6 @@ public class User implements HasFilterField, HasNewCheck, Serializable {
 
     @Override
     public boolean isNew() {
-        return id == null;
+        return getId() == null;
     }
 }
