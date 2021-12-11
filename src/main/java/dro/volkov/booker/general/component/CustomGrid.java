@@ -1,4 +1,4 @@
-package dro.volkov.booker.general.view;
+package dro.volkov.booker.general.component;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
@@ -19,7 +19,7 @@ public class CustomGrid<T extends HasFilterField> extends Grid<T> implements Sel
     protected Registration closeRegistration;
     protected Registration filterRegistration;
 
-    public CustomGrid(FilterCrudService<T> service,Class<T> beanType) {
+    public CustomGrid(FilterCrudService<T> service, Class<T> beanType) {
         super(beanType);
         this.service = service;
         configGrid();
@@ -36,7 +36,10 @@ public class CustomGrid<T extends HasFilterField> extends Grid<T> implements Sel
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
         deleteRegistration = addUIDeleteListener(deleteEvent -> deleteEntity(deleteEvent.getDeleted()));
-        saveRegistration = addUISaveListener(saveEvent -> saveEntity(saveEvent.getPersist()));
+        saveRegistration = addUISaveListener(saveEvent -> {
+            saveEntity(saveEvent.getPersist());
+            getDataProvider().refreshAll();
+        });
         closeRegistration = addUICloseListener(cancelEvent -> cancelSelect());
         filterRegistration = addUIFilterListener(filterEvent -> {
             System.out.println("CATCH");
@@ -53,15 +56,12 @@ public class CustomGrid<T extends HasFilterField> extends Grid<T> implements Sel
 
     protected void saveEntity(T persist) {
         service.save(persist);
-        //updateList();
         cancelSelect();
         noticeSSS("Save succeeded");
     }
 
     protected void deleteEntity(T deleted) {
         service.delete(deleted);
-        // updateList();
-        //  form.close();
         noticeSSS("Delete succeeded");
     }
 

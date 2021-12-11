@@ -10,7 +10,7 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import dro.volkov.booker.MainLayout;
 import dro.volkov.booker.expense.data.entity.Expense;
 import dro.volkov.booker.general.service.FilterCrudService;
-import dro.volkov.booker.general.view.CustomGrid;
+import dro.volkov.booker.general.component.CustomGrid;
 import dro.volkov.booker.general.view.EditForm2;
 import dro.volkov.booker.general.view.FilterForm;
 import lombok.RequiredArgsConstructor;

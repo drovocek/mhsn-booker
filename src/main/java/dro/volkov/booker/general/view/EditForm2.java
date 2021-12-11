@@ -112,6 +112,7 @@ public abstract class EditForm2<T extends HasNewCheck> extends FormLayout
     protected void validateAndPushSave() {
         if (binder.writeBeanIfValid(formEntity)) {
             fireUISaveEvent(formEntity);
+            close();
         }
     }
 
