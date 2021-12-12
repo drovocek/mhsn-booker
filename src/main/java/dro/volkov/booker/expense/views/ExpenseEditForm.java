@@ -14,6 +14,10 @@ import dro.volkov.booker.expense.data.entity.Expense;
 import dro.volkov.booker.general.fabric.ComponentFabric;
 import dro.volkov.booker.general.view.EditForm;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 @UIScope
 @SpringComponent
 public class ExpenseEditForm extends EditForm<Expense> {
@@ -45,11 +49,21 @@ public class ExpenseEditForm extends EditForm<Expense> {
         addFields(price, category, date, description);
     }
 
-    private ComboBox<Category> constructCategory(){
-        return new ComboBox<>(){{
+    private ComboBox<Category> constructCategory() {
+        return new ComboBox<>() {{
             setLabel("Category");
             setItemLabelGenerator(Category::getName);
             setRenderer(new ComponentRenderer<>(ComponentFabric::asLabel));
         }};
+    }
+
+    @Override
+    protected void open(Expense entity) {
+        super.open(entity);
+        if (entity.isNew()) {
+            price.setValue(new BigDecimal("1"));
+            date.setValue(LocalDate.now(ZoneId.of("Europe/Moscow")));
+            description.setValue("some staff");
+        }
     }
 }

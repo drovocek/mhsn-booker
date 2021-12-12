@@ -1,12 +1,16 @@
 package dro.volkov.booker.expense.data.entity;
 
 import com.vaadin.fusion.Nonnull;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @MappedSuperclass
 public abstract class AbstractEntity {
 

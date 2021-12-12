@@ -6,9 +6,10 @@ import dro.volkov.booker.user.data.dict.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
@@ -16,13 +17,20 @@ public class SecurityService {
 
     private static final String LOGOUT_SUCCESS_URL = "/login";
 
-    public UserDetails getAuthenticatedUser() {
+    public Optional<UserDetailsImpl> getAuthenticatedUser() {
         SecurityContext context = SecurityContextHolder.getContext();
         Object principal = context.getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            return (UserDetails) principal;
+        if (principal instanceof UserDetailsImpl) {
+            return Optional.of((UserDetailsImpl) principal);
         }
-        return null;
+        return Optional.empty();
+    }
+
+    public Optional<Integer> getAuthenticatedUserId() {
+        if (getAuthenticatedUser().isPresent()) {
+            return Optional.ofNullable(getAuthenticatedUser().get().getUserId());
+        }
+        return Optional.empty();
     }
 
     public void logout() {
@@ -33,11 +41,11 @@ public class SecurityService {
     }
 
     public boolean hasRole(Role role) {
-        UserDetails authenticatedUser = getAuthenticatedUser();
-        if (authenticatedUser == null) {
-            return false;
-        }
-        return authenticatedUser.getAuthorities().stream()
-                .anyMatch(user -> user.getAuthority().equals(role.role()));
+        return getAuthenticatedUser()
+                .map(authenticatedUser ->
+                        authenticatedUser
+                                .getAuthorities().stream()
+                                .anyMatch(user -> user.getAuthority().equals(role.role())))
+                .orElse(false);
     }
 }

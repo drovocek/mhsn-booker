@@ -11,10 +11,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
-import dro.volkov.booker.event.ClosePublisher;
-import dro.volkov.booker.event.DeletePublisher;
-import dro.volkov.booker.event.SavePublisher;
-import dro.volkov.booker.event.SelectNotifier;
+import dro.volkov.booker.general.event.ClosePublisher;
+import dro.volkov.booker.general.event.DeletePublisher;
+import dro.volkov.booker.general.event.SavePublisher;
+import dro.volkov.booker.general.event.SelectNotifier;
 import dro.volkov.booker.general.data.entity.HasNewCheck;
 import lombok.SneakyThrows;
 

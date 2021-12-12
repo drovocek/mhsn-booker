@@ -1,4 +1,4 @@
-package dro.volkov.booker.event;
+package dro.volkov.booker.general.event;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -8,19 +8,19 @@ import com.vaadin.flow.shared.Registration;
 
 import java.io.Serializable;
 
-public interface CloseNotifier extends Serializable {
+public interface SelectNotifier<T> extends Serializable {
 
-    default Registration addCloseListener(ComponentEventListener<CloseEvent> listener) {
+    default Registration addSelectListener(ComponentEventListener<SelectEvent<T>> listener) {
         if (this instanceof Component) {
-            return ComponentUtil.addListener((Component) this, CloseEvent.class, listener);
+            return ComponentUtil.addListener((Component) this, SelectEvent.class, (ComponentEventListener)listener);
         } else {
             throw new IllegalStateException(String.format("The class '%s' doesn't extend '%s'. Make your implementation for the method '%s'.", this.getClass().getName(), Component.class.getSimpleName(), "addKeyDownListener"));
         }
     }
 
-    default Registration addUICloseListener(ComponentEventListener<CloseEvent> listener) {
+    default Registration addUISelectListener(ComponentEventListener<SelectEvent<T>> listener) {
         if (this instanceof Component) {
-            return ComponentUtil.addListener(UI.getCurrent(), CloseEvent.class, listener);
+            return ComponentUtil.addListener(UI.getCurrent(), SelectEvent.class, (ComponentEventListener)listener);
         } else {
             throw new IllegalStateException(String.format("The class '%s' doesn't extend '%s'. Make your implementation for the method '%s'.", this.getClass().getName(), Component.class.getSimpleName(), "addKeyDownListener"));
         }

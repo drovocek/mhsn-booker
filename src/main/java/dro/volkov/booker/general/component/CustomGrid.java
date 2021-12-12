@@ -4,7 +4,7 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.shared.Registration;
-import dro.volkov.booker.event.*;
+import dro.volkov.booker.general.event.*;
 import dro.volkov.booker.general.data.entity.HasFilterField;
 import dro.volkov.booker.general.data.FilterCrudService;
 

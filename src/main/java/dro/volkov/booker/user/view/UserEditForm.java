@@ -76,5 +76,8 @@ public class UserEditForm extends EditForm<User> {
         super.open(entity);
         email.setEnabled(entity.isNew());
         username.setEnabled(entity.isNew());
+        if (entity.isNew()) {
+            role.setValue(Role.USER);
+        }
     }
 }

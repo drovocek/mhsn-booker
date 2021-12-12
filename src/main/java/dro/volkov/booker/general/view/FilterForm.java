@@ -9,10 +9,10 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.shared.Registration;
-import dro.volkov.booker.event.DeleteNotifier;
-import dro.volkov.booker.event.FilterPublisher;
-import dro.volkov.booker.event.SaveNotifier;
-import dro.volkov.booker.event.SelectPublisher;
+import dro.volkov.booker.general.event.DeleteNotifier;
+import dro.volkov.booker.general.event.FilterPublisher;
+import dro.volkov.booker.general.event.SaveNotifier;
+import dro.volkov.booker.general.event.SelectPublisher;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.SerializationUtils;
 

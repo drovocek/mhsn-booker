@@ -1,4 +1,4 @@
-package dro.volkov.booker.config;
+package dro.volkov.booker.general.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

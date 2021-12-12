@@ -1,9 +1,9 @@
 package dro.volkov.booker.security.service;
 
-import dro.volkov.booker.MailService;
+import dro.volkov.booker.general.service.MailService;
+import dro.volkov.booker.user.data.UserCrudService;
 import dro.volkov.booker.user.data.dict.Role;
 import dro.volkov.booker.user.data.entity.User;
-import dro.volkov.booker.user.data.UserCrudService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,10 +40,6 @@ public class AuthService {
         }
     }
 
-    public void sendToEmailActivationLink(String email){
-        mailService.sendActivationMessage(email);
-    }
-
 
 //    public void authenticate(String userName, String password) {
 //        User user = userService.getByUserName(userName);
@@ -61,18 +57,6 @@ public class AuthService {
 //        }
 //    }
 
-//    public Optional<User> getAuthUser() {
-//        return Optional.ofNullable(VaadinSession.getCurrent().getAttribute(User.class));
-//    }
-
-//    public void activate(String password, String activationCode) {
-//        User user = userService.getByActivationCode(activationCode);
-//        updatePassword(user, password);
-//        mailService.sendMessage(
-//                user.getEmail(),
-//                String.format("Login: %s \nPassword: %s", user.getUserName(), password),
-//                "Registration info");
-//    }
 
 //    public void refreshPassword(String password) {
 //        getAuthUser().ifPresent(authUser -> updatePassword(authUser, password));

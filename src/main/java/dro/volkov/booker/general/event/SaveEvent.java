@@ -1,4 +1,4 @@
-package dro.volkov.booker.event;
+package dro.volkov.booker.general.event;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;

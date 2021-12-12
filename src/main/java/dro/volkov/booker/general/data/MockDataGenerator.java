@@ -58,16 +58,18 @@ public class MockDataGenerator {
                     .peek(user -> user.setPassword(passwordEncoder.encode("user")))
                     .collect(Collectors.toList());
 
-            User admin = new User("admin@admin.com",
-                    passwordEncoder.encode("admin"),
-                    Role.ADMIN);
+            User admin = new User();
+            admin.setEmail("admin@admin.com");
+            admin.setPassword(passwordEncoder.encode("admin"));
+            admin.setRole(Role.ADMIN);
             admin.setActive(true);
             admin.setEnabled(true);
             admin.setUsername(asUsername(admin.getEmail()));
 
-            User user = new User("user@user.com",
-                    passwordEncoder.encode("user"),
-                    Role.USER);
+            User user = new User();
+            user.setEmail("user@user.com");
+            user.setPassword(passwordEncoder.encode("user"));
+            user.setRole(Role.USER);
             user.setActive(true);
             user.setEnabled(true);
             user.setUsername(asUsername(user.getEmail()));

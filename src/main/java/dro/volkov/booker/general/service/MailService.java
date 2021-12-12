@@ -1,4 +1,4 @@
-package dro.volkov.booker;
+package dro.volkov.booker.general.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

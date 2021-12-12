@@ -80,10 +80,8 @@ public class User extends AbstractEntity implements HasFilterField, HasNewCheck,
     @Transient
     private String filterField;
 
-    public User(String email, String password, Role role) {
-        this.password = password;
-        this.email = email;
-        this.role = role;
+    public User(Integer id) {
+        super(id);
     }
 
     @PrePersist
