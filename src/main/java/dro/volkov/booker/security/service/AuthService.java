@@ -82,7 +82,6 @@ public class AuthService {
 //        return userService.isActivated(code);
 //    }
 
-
 //    public void updatePassword(User user, String password) {
 //        String passwordSalt = RandomStringUtils.random(32);
 //        String passwordHash = DigestUtils.sha1Hex(password.concat(passwordSalt));

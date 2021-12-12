@@ -9,9 +9,17 @@ import java.util.List;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
 
-    @Query("select e from Expense e " +
-            "where lower(e.description) like lower(concat('%', :searchTerm, '%')) " +
-            "or lower(e.username) like lower(concat('%', :searchTerm, '%'))")
+//    @Query("""
+//            SELECT e FROM Expense e
+//            JOIN FETCH e.user
+//            WHERE LOWER(e.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+//            """)
+//
+@Query("SELECT e FROM Expense e " +
+        "WHERE LOWER(e.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')) ")
     List<Expense> search(@Param("searchTerm") String searchTerm);
 
+
+//    @Query("SELECT m FROM Meal m JOIN FETCH m.user WHERE m.id = ?1 and m.user.id = ?2")
+//    Expense getWithUsers(int id, int userId);
 }

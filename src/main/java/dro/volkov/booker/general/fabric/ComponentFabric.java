@@ -6,15 +6,26 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import dro.volkov.booker.category.data.entity.Category;
 import dro.volkov.booker.user.data.dict.Role;
+import dro.volkov.booker.user.data.entity.User;
 
 public class ComponentFabric {
 
+    public static Component asLabel(User user) {
+        return asLabel(user.getUsername(),
+                user.getRole().getColorHash(),
+                user.getRole().name() + " " + user.getEmail());
+    }
+
     public static Component asLabel(Category category) {
-        return asLabel(category.getName(), category.getColorHash(), category.getDescription());
+        return asLabel(category.getName(),
+                category.getColorHash(),
+                category.getDescription());
     }
 
     public static Component asLabel(Role role) {
-        return asLabel(role.name(), role.getColorHash(), role.role());
+        return asLabel(role.name(),
+                role.getColorHash(),
+                role.role());
     }
 
     public static Icon asChecked(boolean checked) {

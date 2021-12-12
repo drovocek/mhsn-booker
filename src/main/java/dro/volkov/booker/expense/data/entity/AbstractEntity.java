@@ -13,7 +13,7 @@ public abstract class AbstractEntity {
     @Id
     @GeneratedValue
     @Nonnull
-    @Column(name = "ID")
+    @Column(name = "ID", nullable = false, unique = true)
     private Integer id;
 
     public Integer getId() {

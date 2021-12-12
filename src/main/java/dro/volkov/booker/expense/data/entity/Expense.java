@@ -3,14 +3,16 @@ package dro.volkov.booker.expense.data.entity;
 import dro.volkov.booker.category.data.entity.Category;
 import dro.volkov.booker.general.data.entity.HasFilterField;
 import dro.volkov.booker.general.data.entity.HasNewCheck;
+import dro.volkov.booker.user.data.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -21,32 +23,33 @@ import java.time.ZoneId;
 @Getter
 @ToString
 @Entity
+@Table(name = "EXPENSE")
 public class Expense extends AbstractEntity implements HasFilterField, HasNewCheck, Serializable {
 
-    //    @NotNull
     @Min(1)
-    @Column(name = "PRICE")
+    @Column(name = "PRICE", nullable = false)
     private BigDecimal price;
 
-    @Length(min = 1, max = 200)
-    @Column(name = "DESCRIPTION")
+    @Length(max = 200)
+    @Column(name = "DESCRIPTION", length = 200)
     private String description;
 
-    @Column(name = "DATE")
+    @NotNull
+    @Column(name = "DATE", nullable = false)
     private LocalDate date;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "CATEGORY_ID", nullable = false)
     private Category category;
 
-    @NotEmpty
-    @Column(name = "USERNAME" )
-    private String username;
-
-//    @ToString.Exclude
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private User user;
+    @ToString.Exclude
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "USER_ID", nullable = false, updatable = false)
+    private User user;
 
 //    @JsonIgnoreProperties({"employees"})
 //    @Formula("(select count(c.id) from Contact c where c.company_id = id)")

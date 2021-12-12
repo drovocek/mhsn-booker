@@ -50,16 +50,17 @@ public class ExpenseRootView extends RootView<Expense> {
                 .setComparator(Comparator.comparing(o -> o.getCategory().getName()))
                 .setHeader("Category");
 
-        grid.addColumn("description")
-                .setHeader("Description");
-
-        grid.addColumn("username")
+        grid.addColumn(new ComponentRenderer<>(expense -> asLabel(expense.getUser())))
+                .setComparator(Comparator.comparing(o -> o.getUser().getUsername()))
                 .setHeader("Payer");
 
         grid.addColumn(new LocalDateRenderer<>(
                         Expense::getDate,
                         DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)))
                 .setComparator(Comparator.comparing(Expense::getDate))
+                .setHeader("Date");
+
+        grid.addColumn("description")
                 .setHeader("Date");
     }
 }

@@ -9,8 +9,10 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Getter
@@ -20,13 +22,19 @@ import java.io.Serializable;
 @Entity
 public class Category extends AbstractEntity implements HasFilterField, HasNewCheck, Serializable {
 
+    @NotBlank
     @Length(min = 1, max = 15)
+    @Column(name = "NAME", nullable = false, length = 15)
     private String name;
 
+    @NotBlank
     @Length(min = 7, max = 7)
+    @Column(name = "COLOR_HASH", nullable = false, length = 7)
     private String colorHash;
 
+    @NotBlank
     @Length(min = 1, max = 100)
+    @Column(name = "DESCRIPTION", nullable = false, length = 100)
     private String description;
 
     @Transient

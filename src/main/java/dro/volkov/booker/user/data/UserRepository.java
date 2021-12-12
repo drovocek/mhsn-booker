@@ -10,12 +10,21 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    @Query("select u from User u " +
-            "where lower(u.email) like lower(concat('%', :searchTerm, '%')) " +
-            "or lower(u.registration) like lower(concat('%', :searchTerm, '%'))")
+    @Query("""
+            SELECT u FROM User u
+            WHERE LOWER(u.email) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+            OR LOWER(u.registration) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+            """)
+//    @Query("select u from User u " +
+//            "where lower(u.email) like lower(concat('%', :searchTerm, '%')) " +
+//            "or lower(u.registration) like lower(concat('%', :searchTerm, '%'))")
     List<User> search(@Param("searchTerm") String searchTerm);
 
     Optional<User> findUserByEmail(String email);
 
     Optional<User> findUserByUsername(String username);
+
+//    @EntityGraph(attributePaths = {"expenses"}, type = EntityGraph.EntityGraphType.LOAD)
+//    @Query("SELECT u FROM User u WHERE u.id=?1")
+//    User getWithExpenses(int id);
 }

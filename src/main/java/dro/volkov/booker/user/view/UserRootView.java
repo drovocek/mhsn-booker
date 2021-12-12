@@ -38,23 +38,19 @@ public class UserRootView extends RootView<User> {
         super.updateGridColumns();
         grid.removeAllColumns();
 
-        grid.addColumn(new ComponentRenderer<>(user -> asChecked(user.isActive())))
-                .setComparator(Comparator.comparing(User::getRole))
-                .setHeader("Active");
-
         grid.addColumn(new ComponentRenderer<>(user -> asChecked(user.isEnabled())))
                 .setComparator(Comparator.comparing(User::getRole))
                 .setHeader("Enabled");
+
+        grid.addColumn(new ComponentRenderer<>(user -> asLabel(user.getRole())))
+                .setComparator(Comparator.comparing(User::getRole))
+                .setHeader("Role");
 
         grid.addColumn("username")
                 .setHeader("Username");
 
         grid.addColumn("email")
                 .setHeader("Email");
-
-        grid.addColumn(new ComponentRenderer<>(user -> asLabel(user.getRole())))
-                .setComparator(Comparator.comparing(User::getRole))
-                .setHeader("Category");
 
         grid.addColumn(new LocalDateTimeRenderer<>(
                 User::getLastAccess,
@@ -63,6 +59,10 @@ public class UserRootView extends RootView<User> {
                         .withZone(ZoneId.of("Europe/Moscow"))))
                 .setComparator(Comparator.comparing(User::getLastAccess))
                 .setHeader("Last access");
+
+        grid.addColumn(new ComponentRenderer<>(user -> asChecked(user.isActive())))
+                .setComparator(Comparator.comparing(User::getRole))
+                .setHeader("Active");
 
         grid.addColumn(new LocalDateTimeRenderer<>(
                         User::getRegistration,

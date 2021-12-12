@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
-    @Query("select c from Category c " +
-            "where lower(c.name) like lower(concat('%', :searchTerm, '%')) ")
+    @Query("""
+            SELECT c FROM Category c
+            WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+            """)
     List<Category> search(@Param("searchTerm") String searchTerm);
 }
