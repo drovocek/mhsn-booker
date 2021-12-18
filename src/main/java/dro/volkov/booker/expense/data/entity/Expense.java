@@ -7,6 +7,8 @@ import dro.volkov.booker.user.data.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Length;
@@ -39,6 +41,7 @@ public class Expense extends AbstractEntity implements HasFilterField, HasNewChe
     private LocalDate date;
 
     @NotNull
+    @Fetch(FetchMode.JOIN)
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "CATEGORY_ID", nullable = false)
@@ -46,7 +49,8 @@ public class Expense extends AbstractEntity implements HasFilterField, HasNewChe
 
     @ToString.Exclude
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "USER_ID", nullable = false, updatable = false)
     private User user;

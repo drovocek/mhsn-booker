@@ -12,7 +12,7 @@ import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
 import dro.volkov.booker.category.view.CategoryRootView;
 import dro.volkov.booker.expense.views.ExpenseRootView;
-import dro.volkov.booker.expense.views.dashboard.DashboardView;
+import dro.volkov.booker.dashboard.view.DashboardView;
 import dro.volkov.booker.security.service.SecurityService;
 import dro.volkov.booker.user.data.dict.Role;
 import dro.volkov.booker.user.view.UserRootView;

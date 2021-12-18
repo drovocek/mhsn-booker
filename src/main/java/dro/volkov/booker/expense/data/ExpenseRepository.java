@@ -10,24 +10,20 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
 
-    //    @Query("""
-//            SELECT e FROM Expense e
-//            JOIN FETCH e.user
-//            WHERE LOWER(e.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
-//            """)
-//
-    @Query("SELECT e FROM Expense e " +
-            "WHERE LOWER(e.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')) ")
+    @Query("""
+            SELECT e FROM Expense e
+            WHERE LOWER(e.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+            """)
     List<Expense> search(String searchTerm);
 
     @Query("""
             SELECT e FROM Expense e
+            JOIN FETCH e.user
             WHERE e.user.id = :userId
             AND
             LOWER(e.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
                                         """)
     List<Expense> searchOwn(String searchTerm, Integer userId);
-
 
 //    @Query("SELECT m FROM Meal m JOIN FETCH m.user WHERE m.id = ?1 and m.user.id = ?2")
 //    Expense getWithUsers(int id, int userId);

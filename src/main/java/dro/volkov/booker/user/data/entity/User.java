@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -68,6 +70,7 @@ public class User extends AbstractEntity implements HasFilterField, HasNewCheck,
     @Column(name = "ENABLED", nullable = false)
     private boolean enabled;
 
+    @Fetch(FetchMode.JOIN)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @OrderBy("date DESC")
     @ToString.Exclude
