@@ -51,12 +51,10 @@ public class UserEditForm extends EditForm<User> {
                 boolean usernameNotExist = service.usernameNotExist(username.getValue());
                 boolean emailNotExist = service.emailNotExist(email.getValue());
                 if (!usernameNotExist) {
-                    System.out.println("USERNAME_ERR");
                     username.setErrorMessage("Username is already in use");
                     username.setInvalid(true);
                 }
                 if (!emailNotExist) {
-                    System.out.println("EMAIL_ERR");
                     email.setErrorMessage("Email is already in use");
                     email.setInvalid(true);
                 }

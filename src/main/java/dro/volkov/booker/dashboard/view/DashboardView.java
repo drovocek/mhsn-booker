@@ -3,13 +3,17 @@ package dro.volkov.booker.dashboard.view;
 import com.github.appreciated.apexcharts.config.chart.Type;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.accordion.Accordion;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import dro.volkov.booker.MainLayout;
+import dro.volkov.booker.dashboard.ChartDataAdapter;
 import dro.volkov.booker.dashboard.ChartNode;
+import dro.volkov.booker.dashboard.DateScale;
 import dro.volkov.booker.expense.data.ExpenseCrudService;
 import dro.volkov.booker.expense.data.entity.Expense;
 import lombok.RequiredArgsConstructor;
@@ -37,14 +41,18 @@ public class DashboardView extends VerticalLayout {
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-        List<Expense> expenses = expenseService.findByFilter("");
-        charts.forEach(chartNode -> chartNode.refreshChart(expenses));
+    }
+
+    private void fillCharts(DateScale dateScale) {
+        List<Expense> expenses = expenseService.findByScale(dateScale);
+        ChartDataAdapter cda = new ChartDataAdapter(expenses);
+        charts.forEach(chartNode -> chartNode.refreshChart(dateScale, cda));
     }
 
     @PostConstruct
     private void initView() {
         this.chartParent = constructParent();
-        add(constructSelector(), chartParent);
+        add(new HorizontalLayout(constructScaleSelector(), constructCharTypeSelector()), chartParent);
     }
 
     private Div constructParent() {
@@ -53,21 +61,47 @@ public class DashboardView extends VerticalLayout {
         }};
     }
 
-    private Accordion constructSelector() {
-        return new Accordion() {{
-            List<Type> types = charts.stream().map(ChartNode::getType).collect(Collectors.toList());
-            MultiSelectListBox<Type> listBox = new MultiSelectListBox<>();
-            listBox.setItems(types);
-            listBox.addSelectionListener(event -> {
-                event.getRemovedSelection().forEach(type -> getChart(type)
-                        .ifPresentOrElse(chartParent::remove, () -> hasNoType(type)));
-                event.getAddedSelection().forEach(type -> getChart(type)
-                        .ifPresentOrElse(chartParent::add, () -> hasNoType(type)));
-            });
-            listBox.select(types);
-            close();
-            add("Charts", listBox);
-        }};
+    private Accordion constructCharTypeSelector() {
+        return new Accordion() {
+            final List<Type> types = charts.stream().map(ChartNode::getType).collect(Collectors.toList());
+            final MultiSelectListBox<Type> listBox = new MultiSelectListBox<>();
+
+            {
+                listBox.setItems(types);
+                listBox.addSelectionListener(event -> {
+                    event.getRemovedSelection().forEach(type -> getChart(type)
+                            .ifPresentOrElse(chartParent::remove, () -> hasNoType(type)));
+                    event.getAddedSelection().forEach(type -> getChart(type)
+                            .ifPresentOrElse(chartParent::add, () -> hasNoType(type)));
+                });
+                close();
+                add("Charts", listBox);
+            }
+
+            @Override
+            protected void onAttach(AttachEvent attachEvent) {
+                super.onAttach(attachEvent);
+                listBox.select(types);
+            }
+        };
+    }
+
+    private ComboBox<DateScale> constructScaleSelector() {
+        return new ComboBox<>() {
+            {
+                setLabel("Date scale");
+                setItems(DateScale.values());
+                setItemLabelGenerator(DateScale::name);
+                setClearButtonVisible(false);
+                addValueChangeListener(event -> fillCharts(event.getValue()));
+            }
+
+            @Override
+            protected void onAttach(AttachEvent attachEvent) {
+                super.onAttach(attachEvent);
+                setValue(DateScale.WEEK);
+            }
+        };
     }
 
     private void hasNoType(Type type) {

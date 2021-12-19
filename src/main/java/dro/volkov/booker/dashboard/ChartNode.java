@@ -26,9 +26,9 @@ public abstract class ChartNode extends Div {
 
     protected String title = "Expense by category";
 
-    public void refreshChart(Collection<Expense> data) {
+    public void refreshChart(DateScale dateScale, ChartDataAdapter cda) {
         removeAll();
-        ApexCharts chart = createChart(data);
+        ApexCharts chart = createChart(dateScale, cda);
         chart.addClassName("apex-chart");
         add(chart);
     }
@@ -39,7 +39,7 @@ public abstract class ChartNode extends Div {
 
     public abstract Type getType();
 
-    protected abstract ApexCharts createChart(Collection<Expense> data);
+    protected abstract ApexCharts createChart(DateScale dateScale, ChartDataAdapter cda);
 
     protected Series<Double>[] asSeries(Collection<Expense> data) {
         TreeMap<String, Double> valByLabel =
@@ -66,7 +66,7 @@ public abstract class ChartNode extends Div {
     @SafeVarargs
     protected final Double[] data(Series<Double>... series) {
         return Arrays.stream(series)
-                .map(s->s.getData()[0])
+                .map(s -> s.getData()[0])
                 .toArray(Double[]::new);
     }
 

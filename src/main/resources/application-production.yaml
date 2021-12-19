@@ -19,8 +19,8 @@ spring:
       mail:
         smtp:
           auth: true
-        starttls:
-          enable: true
+          starttls:
+            enable: true
 #  datasource:
 #    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost/booker}
 #    username: ${SPRING_DATASOURCE_USERNAME:user}
@@ -34,5 +34,5 @@ logging:
   level: org.atmosphere=warn
 
 app:
-  root-path: http://localhost:8080
+  root-path: https://mhsn-booker.herokuapp.com
   root-mail: booker@app.dro

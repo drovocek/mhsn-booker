@@ -1,5 +1,6 @@
 package dro.volkov.booker.expense.data;
 
+import dro.volkov.booker.dashboard.DateScale;
 import dro.volkov.booker.expense.data.entity.Expense;
 import dro.volkov.booker.general.data.FilterCrudService;
 import dro.volkov.booker.security.service.SecurityService;
@@ -8,8 +9,13 @@ import dro.volkov.booker.user.data.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+
+import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
+import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 
 @RequiredArgsConstructor
 @Service
@@ -40,6 +46,35 @@ public class ExpenseCrudService implements FilterCrudService<Expense> {
         } else if (securityService.hasRole(Role.USER)) {
             return securityService.getAuthenticatedUserId()
                     .map(useId -> expenseRepository.searchOwn(stringFilter, useId))
+                    .orElse(Collections.emptyList());
+        }
+        return Collections.emptyList();
+    }
+
+    public List<Expense> findByScale(DateScale dateScale) {
+        LocalDate startDate;
+        LocalDate endDate;
+        LocalDate now = LocalDate.now();
+
+        if (dateScale.equals(DateScale.DAY)) {
+            startDate = now;
+            endDate = now;
+        } else if (dateScale.equals(DateScale.WEEK)) {
+            startDate = now.with(DayOfWeek.MONDAY);
+            endDate = now.with(DayOfWeek.SUNDAY);
+        } else if (dateScale.equals(DateScale.MONTH)) {
+            startDate = now.withDayOfMonth(1);
+            endDate = now.withDayOfMonth(now.lengthOfMonth());
+        } else {
+            startDate = now.with(firstDayOfYear());
+            endDate = now.with(lastDayOfYear());
+        }
+
+        if (securityService.hasRole(Role.ADMIN)) {
+            return expenseRepository.getBetweenHalfOpenAll(startDate, endDate);
+        } else if (securityService.hasRole(Role.USER)) {
+            return securityService.getAuthenticatedUserId()
+                    .map(useId -> expenseRepository.getBetweenHalfOpenByUser(startDate, endDate, useId))
                     .orElse(Collections.emptyList());
         }
         return Collections.emptyList();

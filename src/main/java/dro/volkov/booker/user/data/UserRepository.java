@@ -15,7 +15,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("""
             SELECT u FROM User u
             WHERE LOWER(u.email) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
-            OR LOWER(u.registration) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
             """)
 //    @Query("select u from User u " +
 //            "where lower(u.email) like lower(concat('%', :searchTerm, '%')) " +
