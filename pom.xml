@@ -174,11 +174,18 @@
             <version>2.0.0-beta13</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.xdev-software/vaadin-chip-combobox -->
         <dependency>
-            <groupId>org.vaadin.gatanaso</groupId>
-            <artifactId>multiselect-combo-box-flow</artifactId>
-            <version>3.0.2</version> <!-- use appropriate version -->
+            <groupId>com.xdev-software</groupId>
+            <artifactId>vaadin-chip-combobox</artifactId>
+            <version>2.1.0</version>
         </dependency>
+
+        <!--        <dependency>-->
+<!--            <groupId>com.vaadin.componentfactory</groupId>-->
+<!--            <artifactId>multiple-select</artifactId>-->
+<!--            <version>3.0.1</version>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
