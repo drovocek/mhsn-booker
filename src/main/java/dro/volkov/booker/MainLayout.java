@@ -52,7 +52,6 @@ public class MainLayout extends AppLayout {
 
             RouterLink dashboardLink = new RouterLink("Dashboard", DashboardView.class);
             dashboardLink.setHighlightCondition(HighlightConditions.sameLocation());
-            dashboardLink.setVisible(securityService.hasRole(Role.ADMIN));
 
             RouterLink usersLink = new RouterLink("Users", UserRootView.class);
             usersLink.setHighlightCondition(HighlightConditions.sameLocation());

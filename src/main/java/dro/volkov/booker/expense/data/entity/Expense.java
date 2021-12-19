@@ -17,7 +17,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
@@ -30,7 +29,7 @@ public class Expense extends AbstractEntity implements HasFilterField, HasNewChe
 
     @Min(1)
     @Column(name = "PRICE", nullable = false)
-    private BigDecimal price;
+    private Double price;
 
     @Length(max = 200)
     @Column(name = "DESCRIPTION", length = 200)

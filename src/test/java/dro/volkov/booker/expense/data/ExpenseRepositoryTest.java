@@ -17,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -100,7 +99,7 @@ class ExpenseRepositoryTest {
         Random r = new Random(seed);
 
         List<Expense> expenses = expenseGenerator.create(50, seed).stream()
-                .peek(expense -> expense.setPrice(BigDecimal.valueOf(generatePrice(r))))
+                .peek(expense -> expense.setPrice(generatePrice(r)))
                 .peek(expense -> expense.setCategory(categoriesWithId.get(rand.nextInt(categoriesWithId.size()))))
                 .peek(expense -> expense.setUser(usersWithId.get(rand.nextInt(usersWithId.size()))))
                 .collect(Collectors.toList());
@@ -109,7 +108,7 @@ class ExpenseRepositoryTest {
         logger.info("Expense generated demo data");
     }
 
-    private long generatePrice(Random r) {
+    private double generatePrice(Random r) {
         return r.nextInt(100, 200);
     }
 

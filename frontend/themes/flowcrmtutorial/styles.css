@@ -24,7 +24,20 @@ a[highlight] {
 .app-round {
     height: 25px;
     width: 25px;
-    /*background-color: #bbb;*/
-    /*border-radius: 50%;*/
-    /*display: inline-block;*/
+}
+
+.chart-parent {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chart-node {
+    flex-grow: 1;
+    max-width: calc(100%/2);
+}
+
+.apex-chart {
+    /*flex-grow: 1;*/
+    /*min-width: calc(100%/2);*/
 }
