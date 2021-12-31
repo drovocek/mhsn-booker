@@ -34,10 +34,5 @@ a[highlight] {
 
 .chart-node {
     flex-grow: 1;
-    max-width: calc(100%/2);
-}
-
-.apex-chart {
-    /*flex-grow: 1;*/
-    /*min-width: calc(100%/2);*/
+    max-width: calc(100% / 2);
 }

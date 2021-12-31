@@ -16,13 +16,13 @@ import org.vaadin.artur.helpers.LaunchUtil;
  * and some desktop browsers.
  */
 
-@SpringBootApplication
-@Theme(value = "flowcrmtutorial")
+@Theme("booker-base")
 @PWA(name = "Booker",
         shortName = "Booker",
         offlinePath = "offline.html",
         offlineResources = {"images/logo.png"})
 @NpmPackage(value = "line-awesome", version = "1.3.0")
+@SpringBootApplication
 public class Application extends SpringBootServletInitializer implements AppShellConfigurator {
 
     public static void main(String[] args) {
