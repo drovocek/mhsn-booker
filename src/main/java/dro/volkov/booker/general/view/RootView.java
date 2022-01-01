@@ -6,11 +6,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import dro.volkov.booker.general.component.CustomGrid;
 import dro.volkov.booker.general.data.FilterCrudService;
 import dro.volkov.booker.general.data.entity.HasFilterField;
-import dro.volkov.booker.general.data.entity.HasNewCheck;
+import dro.volkov.booker.general.data.entity.HasNew;
 
 import java.io.Serializable;
 
-public abstract class RootView<T extends HasNewCheck & Serializable & HasFilterField> extends VerticalLayout {
+public abstract class RootView<T extends HasNew & Serializable & HasFilterField> extends VerticalLayout {
 
     protected final FilterForm<T> filterForm;
     protected final EditForm<T> editForm;

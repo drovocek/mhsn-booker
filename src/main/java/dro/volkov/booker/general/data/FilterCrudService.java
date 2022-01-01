@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface FilterCrudService<T> {
 
-    void save(T entity);
+    T save(T entity);
 
     void delete(T entity);
 

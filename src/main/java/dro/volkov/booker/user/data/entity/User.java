@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import dro.volkov.booker.expense.data.entity.AbstractEntity;
 import dro.volkov.booker.expense.data.entity.Expense;
 import dro.volkov.booker.general.data.entity.HasFilterField;
-import dro.volkov.booker.general.data.entity.HasNewCheck;
+import dro.volkov.booker.general.data.entity.HasNew;
 import dro.volkov.booker.user.data.dict.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +33,7 @@ import java.util.List;
         @UniqueConstraint(columnNames = "EMAIL", name = "APP_USERS_UNIQUE_EMAIL_IDX"),
         @UniqueConstraint(columnNames = "USERNAME", name = "APP_USERS_UNIQUE_USERNAME_IDX")
 })
-public class User extends AbstractEntity implements HasFilterField, HasNewCheck, Serializable {
+public class User extends AbstractEntity implements HasFilterField, HasNew, Serializable {
 
     @Email
     @NotBlank

@@ -17,11 +17,11 @@ public class UserCrudService implements FilterCrudService<User> {
     private final MailService mailService;
 
     @Override
-    public void save(User user) {
-        if(user.isNew()){
+    public User save(User user) {
+        if (user.isNew()) {
             mailService.sendActivationMessage(user.getEmail());
         }
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override

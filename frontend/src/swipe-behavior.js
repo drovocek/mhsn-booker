@@ -1,9 +1,35 @@
-Object.assign||Object.defineProperty(Object,"assign",{enumerable:!1,configurable:!0,writable:!0,value:function(a,b){"use strict";if(void 0===a||null===a)error("Cannot convert first argument to object");for(var c=Object(a),d=1;d<arguments.length;d++){var e=arguments[d];if(void 0!==e&&null!==e)for(var f=Object.keys(Object(e)),g=0,h=f.length;g<h;g++){var i=f[g],j=Object.getOwnPropertyDescriptor(e,i);void 0!==j&&j.enumerable&&(c[i]=e[i])}}return c}});
+Object.assign || Object.defineProperty(Object, "assign", {
+    enumerable: !1,
+    configurable: !0,
+    writable: !0,
+    value: function (a, b) {
+        "use strict";
+        if (void 0 === a || null === a) error("Cannot convert first argument to object");
+        for (var c = Object(a), d = 1; d < arguments.length; d++) {
+            var e = arguments[d];
+            if (void 0 !== e && null !== e) for (var f = Object.keys(Object(e)), g = 0, h = f.length; g < h; g++) {
+                var i = f[g], j = Object.getOwnPropertyDescriptor(e, i);
+                void 0 !== j && j.enumerable && (c[i] = e[i])
+            }
+        }
+        return c
+    }
+});
 
 /**
  * CustomEvent() polyfill
  */
-!function(){if("function"==typeof window.CustomEvent)return;function t(t,e){e=e||{bubbles:!1,cancelable:!1,detail:void 0};var n=document.createEvent("CustomEvent");return n.initCustomEvent(t,e.bubbles,e.cancelable,e.detail),n}t.prototype=window.Event.prototype,window.CustomEvent=t}();
+!function () {
+    if ("function" == typeof window.CustomEvent) return;
+
+    function t(t, e) {
+        e = e || {bubbles: !1, cancelable: !1, detail: void 0};
+        var n = document.createEvent("CustomEvent");
+        return n.initCustomEvent(t, e.bubbles, e.cancelable, e.detail), n
+    }
+
+    t.prototype = window.Event.prototype, window.CustomEvent = t
+}();
 window.swiper_behavior = {
     swipe: function (el, settings) {
 
@@ -34,7 +60,10 @@ window.swiper_behavior = {
             startTime = 0,        // время начала касания
             support = {           // поддерживаемые браузером типы событий
                 pointer: !!("PointerEvent" in window || ("msPointerEnabled" in window.navigator)),
-                touch: !!(typeof window.orientation !== "undefined" || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || "ontouchstart" in window || navigator.msMaxTouchPoints || "maxTouchPoints" in window.navigator > 1 || "msMaxTouchPoints" in window.navigator > 1)
+                touch: !!(typeof window.orientation !== "undefined" ||
+                    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                    "ontouchstart" in window || navigator.msMaxTouchPoints || "maxTouchPoints" in window.navigator > 1 ||
+                    "msMaxTouchPoints" in window.navigator > 1)
             };
 
         /**
@@ -43,22 +72,23 @@ window.swiper_behavior = {
          */
         var getSupportedEvents = function () {
             switch (true) {
-                case support.pointer:
-                    events = {
-                        type: "pointer",
-                        start: "PointerDown",
-                        move: "PointerMove",
-                        end: "PointerUp",
-                        cancel: "PointerCancel",
-                        leave: "PointerLeave"
-                    };
-                    // добавление префиксов для IE10
-                    var ie10 = (window.navigator.msPointerEnabled && Function('/*@cc_on return document.documentMode===10@*/')());
-                    for (var value in events) {
-                        if (value === "type") continue;
-                        events[value] = (ie10) ? "MS" + events[value] : events[value].toLowerCase();
-                    }
-                    break;
+                // case support.pointer:
+                //     events = {
+                //         type: "pointer",
+                //         start: "PointerDown",
+                //         move: "PointerMove",
+                //         end: "PointerUp",
+                //         cancel: "PointerCancel",
+                //         leave: "PointerLeave"
+                //     };
+                //     // добавление префиксов для IE10
+                //     var ie10 = (window.navigator.msPointerEnabled && Function('/*@cc_on return document.documentMode===10@*/')());
+                //     for (var value in events) {
+                //         if (value === "type") continue;
+                //         events[value] = (ie10) ? "MS" + events[value] : events[value].toLowerCase();
+                //     }
+                //     console.log("!!! Support Pointer !!!");
+                //     break;
                 case support.touch:
                     events = {
                         type: "touch",
@@ -67,6 +97,7 @@ window.swiper_behavior = {
                         end: "touchend",
                         cancel: "touchcancel"
                     };
+                    console.log("!!! Support Touch !!!");
                     break;
                 default:
                     events = {
@@ -76,11 +107,11 @@ window.swiper_behavior = {
                         end: "mouseup",
                         leave: "mouseleave"
                     };
+                    console.log("!!! Support Mouse !!!");
                     break;
             }
             return events;
         };
-
 
         /**
          * Объединение событий mouse/pointer и touch.
@@ -90,7 +121,6 @@ window.swiper_behavior = {
         var eventsUnify = function (e) {
             return e.changedTouches ? e.changedTouches[0] : e;
         };
-
 
         /**
          * Обрабочик начала касания указателем.
@@ -172,101 +202,101 @@ window.swiper_behavior = {
         }
     }
 }
-
-
-
-var getExampleDiv = function(id) {
-    return document.getElementById("example-" + id);
-};
-
-var makeDone = function(el, currentDir, dirs) {
-    if (dirs.indexOf(currentDir) > -1) {
-        el.classList.add("swiped");
-        el.querySelector(".swipe-block-text").textContent = "сделан свайп (" + currentDir + ")";
-    }
-};
-
-var examples = {
-    simpleLeft: {
-        el: getExampleDiv("simple-one"),
-        callback: function(e) {
-            makeDone(e.target, e.detail.dir, "left");
-        }
-    },
-    simpleRight: {
-        el: getExampleDiv("simple-two"),
-        callback: function(e) {
-            makeDone(e.target, e.detail.dir, "right");
-        }
-    },
-    simpleUpDown: {
-        el: getExampleDiv("simple-three"),
-        callback: function(e) {
-            makeDone(e.target, e.detail.dir, "up down");
-        }
-    },
-    distRight: {
-        el: getExampleDiv("dist-one"),
-        callback: function(e) {
-            makeDone(e.target, e.detail.dir, "right");
-            console.log({
-                "Дистанция": e.detail.dist,
-                "Направление": e.detail.dir,
-                "Полное событие": e.detail.full
-            });
-        },
-        set: {
-            minDist: 180,
-            maxDist: 250
-        }
-    },
-    distLeft: {
-        el: getExampleDiv("dist-two"),
-        callback: function(e) {
-            makeDone(e.target, e.detail.dir, "left");
-            console.log({
-                "Дистанция": e.detail.dist,
-                "Направление": e.detail.dir,
-                "Полное событие": e.detail.full
-            });
-        },
-        set: {
-            minDist: parseInt((getExampleDiv("dist-two").clientWidth / 2).toFixed(), 10),
-            maxDist: parseInt(getExampleDiv("dist-two").clientWidth.toFixed(), 10)
-        }
-    },
-    timeDown: {
-        el: getExampleDiv("timeout-one"),
-        callback: function(e) {
-            makeDone(e.target, e.detail.dir, "down");
-            console.log({
-                "Время на свайп": e.detail.time,
-            });
-        },
-        set: {
-            minTime: 750,
-            maxTime: 1750
-        }
-    },
-    timeLeft: {
-        el: getExampleDiv("timeout-two"),
-        callback: function(e) {
-            makeDone(e.target, e.detail.dir, "left");
-            console.log({
-                "Время на свайп": e.detail.time,
-            });
-        },
-        set: {
-            maxTime: 175,
-            minTime: 50
-        }
-    }
-};
-
-for (var example in examples) {
-    var el = examples[example].el;
-    swipe(el, examples[example].set);
-    el.addEventListener("swipe", examples[example].callback);
-}
-
-
+//
+//
+//
+// var getExampleDiv = function(id) {
+//     return document.getElementById("example-" + id);
+// };
+//
+// var makeDone = function(el, currentDir, dirs) {
+//     if (dirs.indexOf(currentDir) > -1) {
+//         el.classList.add("swiped");
+//         el.querySelector(".swipe-block-text").textContent = "сделан свайп (" + currentDir + ")";
+//     }
+// };
+//
+// var examples = {
+//     simpleLeft: {
+//         el: getExampleDiv("simple-one"),
+//         callback: function(e) {
+//             makeDone(e.target, e.detail.dir, "left");
+//         }
+//     },
+//     simpleRight: {
+//         el: getExampleDiv("simple-two"),
+//         callback: function(e) {
+//             makeDone(e.target, e.detail.dir, "right");
+//         }
+//     },
+//     simpleUpDown: {
+//         el: getExampleDiv("simple-three"),
+//         callback: function(e) {
+//             makeDone(e.target, e.detail.dir, "up down");
+//         }
+//     },
+//     distRight: {
+//         el: getExampleDiv("dist-one"),
+//         callback: function(e) {
+//             makeDone(e.target, e.detail.dir, "right");
+//             console.log({
+//                 "Дистанция": e.detail.dist,
+//                 "Направление": e.detail.dir,
+//                 "Полное событие": e.detail.full
+//             });
+//         },
+//         set: {
+//             minDist: 180,
+//             maxDist: 250
+//         }
+//     },
+//     distLeft: {
+//         el: getExampleDiv("dist-two"),
+//         callback: function(e) {
+//             makeDone(e.target, e.detail.dir, "left");
+//             console.log({
+//                 "Дистанция": e.detail.dist,
+//                 "Направление": e.detail.dir,
+//                 "Полное событие": e.detail.full
+//             });
+//         },
+//         set: {
+//             minDist: parseInt((getExampleDiv("dist-two").clientWidth / 2).toFixed(), 10),
+//             maxDist: parseInt(getExampleDiv("dist-two").clientWidth.toFixed(), 10)
+//         }
+//     },
+//     timeDown: {
+//         el: getExampleDiv("timeout-one"),
+//         callback: function(e) {
+//             makeDone(e.target, e.detail.dir, "down");
+//             console.log({
+//                 "Время на свайп": e.detail.time,
+//             });
+//         },
+//         set: {
+//             minTime: 750,
+//             maxTime: 1750
+//         }
+//     },
+//     timeLeft: {
+//         el: getExampleDiv("timeout-two"),
+//         callback: function(e) {
+//             makeDone(e.target, e.detail.dir, "left");
+//             console.log({
+//                 "Время на свайп": e.detail.time,
+//             });
+//         },
+//         set: {
+//             maxTime: 175,
+//             minTime: 50
+//         }
+//     }
+// };
+//
+// for (var example in examples) {
+//     var el = examples[example].el;
+//     swipe(el, examples[example].set);
+//     el.addEventListener("swipe", examples[example].callback);
+// }
+//
+//

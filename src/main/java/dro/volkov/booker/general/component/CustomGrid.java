@@ -4,9 +4,9 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.shared.Registration;
-import dro.volkov.booker.general.event.*;
-import dro.volkov.booker.general.data.entity.HasFilterField;
 import dro.volkov.booker.general.data.FilterCrudService;
+import dro.volkov.booker.general.data.entity.HasFilterField;
+import dro.volkov.booker.general.event.*;
 
 import static dro.volkov.booker.util.NotificationUtil.noticeSSS;
 
@@ -29,7 +29,8 @@ public class CustomGrid<T extends HasFilterField> extends Grid<T> implements Sel
         addClassNames("filter-crud-grid");
         setSizeFull();
         getColumns().forEach(col -> col.setAutoWidth(true));
-        asSingleSelect().addValueChangeListener(event -> fireUISelectEvent(event.getValue()));
+        asSingleSelect()
+                .addValueChangeListener(event -> fireUISelectEvent(event.getValue()));
     }
 
     @Override
@@ -37,8 +38,10 @@ public class CustomGrid<T extends HasFilterField> extends Grid<T> implements Sel
         super.onAttach(attachEvent);
         deleteRegistration = addUIDeleteListener(deleteEvent -> deleteEntity(deleteEvent.getDeleted()));
         saveRegistration = addUISaveListener(saveEvent -> {
-            saveEntity(saveEvent.getPersist());
-            getDataProvider().refreshAll();
+            T saved = saveEntity(saveEvent.getPersist());
+            getDataProvider().refreshItem(saved);
+            cancelSelect();
+            noticeSSS("Save succeeded");
         });
         closeRegistration = addUICloseListener(cancelEvent -> cancelSelect());
         filterRegistration = addUIFilterListener(filterEvent -> updateList(filterEvent.getFilter()));
@@ -49,12 +52,12 @@ public class CustomGrid<T extends HasFilterField> extends Grid<T> implements Sel
         super.onDetach(detachEvent);
         deleteRegistration.remove();
         saveRegistration.remove();
+        closeRegistration.remove();
+        filterRegistration.remove();
     }
 
-    protected void saveEntity(T persist) {
-        service.save(persist);
-        cancelSelect();
-        noticeSSS("Save succeeded");
+    protected T saveEntity(T persist) {
+        return service.save(persist);
     }
 
     protected void deleteEntity(T deleted) {

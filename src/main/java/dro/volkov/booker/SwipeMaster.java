@@ -7,7 +7,7 @@ import elemental.json.JsonObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public interface SwiperMaster {
+public interface SwipeMaster {
 
     default void asSwipeEventGenerator(Component target){
         target.addAttachListener(attachEvent ->

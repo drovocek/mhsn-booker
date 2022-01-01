@@ -1,6 +1,6 @@
 package dro.volkov.booker.general.data.entity;
 
-public interface HasNewCheck {
+public interface HasNew {
 
     boolean isNew();
 }

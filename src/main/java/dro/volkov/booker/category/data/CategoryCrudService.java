@@ -19,12 +19,8 @@ public class CategoryCrudService implements FilterCrudService<Category> {
     }
 
     @Override
-    public void save(Category contact) {
-        if (contact == null) {
-            System.err.println("Contact is null. Are you sure you have connected your form to the application?");
-            return;
-        }
-        categoryRepository.save(contact);
+    public Category save(Category contact) {
+        return categoryRepository.save(contact);
     }
 
     @Override

@@ -2,7 +2,6 @@ package dro.volkov.booker.general.view;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -27,7 +26,6 @@ public abstract class FilterForm<T extends Serializable>
     private final T formEntity;
 
     protected TextField filterField;
-    protected Button addButton;
 
     private Registration deleteRegistration;
     private Registration saveRegistration;
@@ -42,8 +40,7 @@ public abstract class FilterForm<T extends Serializable>
     protected void initView() {
         addClassName("toolbar");
         filterField = constructFilterField();
-        addButton = constructAddButton();
-        add(filterField, addButton);
+        add(filterField);
         binder.bindInstanceFields(this);
     }
 
@@ -76,15 +73,6 @@ public abstract class FilterForm<T extends Serializable>
                 setClearButtonVisible(true);
                 setValueChangeMode(ValueChangeMode.LAZY);
                 addValueChangeListener(e -> pushFilter());
-            }
-        };
-    }
-
-    protected Button constructAddButton() {
-        return new Button() {
-            {
-                setText("Add");
-                addClickListener(clickEvent -> fireUISelectEvent(getNewInstance()));
             }
         };
     }

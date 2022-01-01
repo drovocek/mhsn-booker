@@ -1,7 +1,8 @@
-package dro.volkov.booker.expense.data.entity;
+package dro.volkov.booker.expense_2;
 
 import dro.volkov.booker.category.data.entity.Category;
-import dro.volkov.booker.general.data.entity.HasFilterField;
+import dro.volkov.booker.expense.data.entity.AbstractEntity;
+import dro.volkov.booker.expense_2.general.GridField;
 import dro.volkov.booker.general.data.entity.HasNew;
 import dro.volkov.booker.user.data.entity.User;
 import lombok.Getter;
@@ -16,7 +17,6 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
@@ -25,18 +25,21 @@ import java.time.ZoneId;
 @ToString
 @Entity
 @Table(name = "EXPENSE")
-public class Expense extends AbstractEntity implements HasFilterField, HasNew, Serializable {
+public class Expense_2 extends AbstractEntity implements HasNew {
 
     @Min(1)
     @Column(name = "PRICE", nullable = false)
+    @GridField(title = "Price")
     private Double price;
 
     @Length(max = 200)
     @Column(name = "DESCRIPTION", length = 200)
+    @GridField(title = "Description")
     private String description;
 
     @NotNull
     @Column(name = "DATE", nullable = false)
+    @GridField(title = "Date")
     private LocalDate date;
 
     @NotNull
@@ -44,6 +47,7 @@ public class Expense extends AbstractEntity implements HasFilterField, HasNew, S
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "CATEGORY_ID", nullable = false)
+    @GridField(title = "Category")
     private Category category;
 
     @ToString.Exclude
@@ -56,9 +60,6 @@ public class Expense extends AbstractEntity implements HasFilterField, HasNew, S
 
 //    @JsonIgnoreProperties({"employees"})
 //    @Formula("(select count(c.id) from Contact c where c.company_id = id)")
-
-    @Transient
-    private String filterField;
 
     @PrePersist
     private void setDateIfNotSet() {

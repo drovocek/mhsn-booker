@@ -1,8 +1,9 @@
-package dro.volkov.booker.expense.data;
+package dro.volkov.booker.expense_2;
 
 import dro.volkov.booker.dashboard.DateScale;
+import dro.volkov.booker.expense.data.ExpenseRepository;
 import dro.volkov.booker.expense.data.entity.Expense;
-import dro.volkov.booker.general.data.FilterCrudService;
+import dro.volkov.booker.expense_2.general.DataService;
 import dro.volkov.booker.security.service.SecurityService;
 import dro.volkov.booker.user.data.dict.Role;
 import dro.volkov.booker.user.data.entity.User;
@@ -19,7 +20,7 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 
 @RequiredArgsConstructor
 @Service
-public class ExpenseCrudService implements FilterCrudService<Expense> {
+public class ExpenseCrudService_2 implements DataService<Expense> {
 
     private final ExpenseRepository expenseRepository;
     private final SecurityService securityService;
@@ -42,14 +43,14 @@ public class ExpenseCrudService implements FilterCrudService<Expense> {
     }
 
     @Override
-    public List<Expense> findByFilter(String stringFilter) {
-        if (securityService.hasRole(Role.ADMIN)) {
-            return expenseRepository.search(stringFilter);
-        } else if (securityService.hasRole(Role.USER)) {
-            return securityService.getAuthenticatedUserId()
-                    .map(useId -> expenseRepository.searchOwn(stringFilter, useId))
-                    .orElse(Collections.emptyList());
-        }
+    public List<Expense> findByFilterFields(Expense filter) {
+//        if (securityService.hasRole(Role.ADMIN)) {
+//            return expenseRepository.search(stringFilter);
+//        } else if (securityService.hasRole(Role.USER)) {
+//            return securityService.getAuthenticatedUserId()
+//                    .map(useId -> expenseRepository.searchOwn(stringFilter, useId))
+//                    .orElse(Collections.emptyList());
+//        }
         return Collections.emptyList();
     }
 
