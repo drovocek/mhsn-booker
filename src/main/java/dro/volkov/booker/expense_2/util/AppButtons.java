@@ -13,7 +13,7 @@ import dro.volkov.booker.general.event.OpenFilterEvent;
 
 import static dro.volkov.booker.util.NotificationUtil.noticeSSS;
 
-public class ButtonFabric {
+public class AppButtons {
 
     public static Button editSwitchBtn() {
         Button button = createButton(

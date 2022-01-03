@@ -1,6 +1,7 @@
 package dro.volkov.booker.category.data.entity;
 
 import dro.volkov.booker.expense.data.entity.AbstractEntity;
+import dro.volkov.booker.expense_2.general.HasName;
 import dro.volkov.booker.general.data.entity.HasFilterField;
 import dro.volkov.booker.general.data.entity.HasNew;
 import lombok.Getter;
@@ -20,7 +21,7 @@ import java.io.Serializable;
 @ToString
 @NoArgsConstructor
 @Entity
-public class Category extends AbstractEntity implements HasFilterField, HasNew, Serializable {
+public class Category extends AbstractEntity implements HasNew, HasName, HasFilterField,Serializable {
 
     @NotBlank
     @Length(min = 1, max = 15)

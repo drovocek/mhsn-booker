@@ -1,5 +1,7 @@
 package dro.volkov.booker.expense_2;
 
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.Renderer;
 import dro.volkov.booker.category.data.entity.Category;
 import dro.volkov.booker.expense.data.entity.AbstractEntity;
 import dro.volkov.booker.expense_2.general.GridField;
@@ -19,6 +21,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.ZoneId;
+
+import static dro.volkov.booker.general.fabric.ComponentFabric.asLabel;
 
 @Setter
 @Getter
@@ -47,7 +51,6 @@ public class Expense_2 extends AbstractEntity implements HasNew {
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "CATEGORY_ID", nullable = false)
-    @GridField(title = "Category")
     private Category category;
 
     @ToString.Exclude
@@ -71,5 +74,15 @@ public class Expense_2 extends AbstractEntity implements HasNew {
     @Override
     public boolean isNew() {
         return getId() == null;
+    }
+
+    @GridField(title = "Category")
+    public Renderer<Expense_2> categoryRenderer() {
+        return new ComponentRenderer<>(t -> asLabel(t.getCategory()));
+    }
+
+    @GridField(title = "User")
+    public Renderer<Expense_2> userRenderer() {
+        return new ComponentRenderer<>(t -> asLabel(t.getUser()));
     }
 }

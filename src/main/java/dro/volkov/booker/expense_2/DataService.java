@@ -1,4 +1,4 @@
-package dro.volkov.booker.expense_2.general;
+package dro.volkov.booker.expense_2;
 
 import java.util.List;
 
@@ -8,5 +8,7 @@ public interface DataService<T> {
 
     void delete(T entity);
 
-    List<T> findByFilterFields(T filter);
+    List<T> getAll();
+
+    List<T> findByFilter(Object filter);
 }

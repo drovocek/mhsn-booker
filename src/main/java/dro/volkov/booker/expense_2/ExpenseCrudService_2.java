@@ -1,9 +1,6 @@
 package dro.volkov.booker.expense_2;
 
 import dro.volkov.booker.dashboard.DateScale;
-import dro.volkov.booker.expense.data.ExpenseRepository;
-import dro.volkov.booker.expense.data.entity.Expense;
-import dro.volkov.booker.expense_2.general.DataService;
 import dro.volkov.booker.security.service.SecurityService;
 import dro.volkov.booker.user.data.dict.Role;
 import dro.volkov.booker.user.data.entity.User;
@@ -20,18 +17,18 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 
 @RequiredArgsConstructor
 @Service
-public class ExpenseCrudService_2 implements DataService<Expense> {
+public class ExpenseCrudService_2 implements DataService<Expense_2> {
 
-    private final ExpenseRepository expenseRepository;
+    private final ExpenseRepository_2 expenseRepository;
     private final SecurityService securityService;
 
     @Override
-    public void delete(Expense expense) {
+    public void delete(Expense_2 expense) {
         expenseRepository.delete(expense);
     }
 
     @Override
-    public Expense save(Expense expense) {
+    public Expense_2 save(Expense_2 expense) {
         if (expense.isNew()) {
             securityService.getAuthenticatedUserId()
                     .map(User::new)
@@ -43,7 +40,7 @@ public class ExpenseCrudService_2 implements DataService<Expense> {
     }
 
     @Override
-    public List<Expense> findByFilterFields(Expense filter) {
+    public List<Expense_2> findByFilter(Object filter) {
 //        if (securityService.hasRole(Role.ADMIN)) {
 //            return expenseRepository.search(stringFilter);
 //        } else if (securityService.hasRole(Role.USER)) {
@@ -51,10 +48,15 @@ public class ExpenseCrudService_2 implements DataService<Expense> {
 //                    .map(useId -> expenseRepository.searchOwn(stringFilter, useId))
 //                    .orElse(Collections.emptyList());
 //        }
-        return Collections.emptyList();
+        return getAll();
     }
 
-    public List<Expense> findByScale(DateScale dateScale) {
+    @Override
+    public List<Expense_2> getAll() {
+        return expenseRepository.findAll();
+    }
+
+    public List<Expense_2> findByScale(DateScale dateScale) {
         LocalDate startDate;
         LocalDate endDate;
         LocalDate now = LocalDate.now();

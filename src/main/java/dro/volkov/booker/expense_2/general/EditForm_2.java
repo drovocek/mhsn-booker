@@ -62,7 +62,11 @@ public class EditForm_2<T extends HasNew> extends VerticalLayout
                 open(selected);
             }
         });
-        this.openEditorReg = addUIOpenEditorListener(event -> setVisible(!isVisible()));
+        this.openEditorReg = addUIOpenEditorListener(event -> {
+            setVisible(!isVisible());
+            this.binder.readBean(getNewInstance());
+            title.setText("Edit");
+        });
     }
 
     @Override

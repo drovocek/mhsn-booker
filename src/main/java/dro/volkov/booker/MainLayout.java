@@ -20,8 +20,8 @@ import dro.volkov.booker.expense_2.ExpenseRootView_2;
 import dro.volkov.booker.security.service.SecurityService;
 import dro.volkov.booker.user.view.UserRootView;
 
-import static dro.volkov.booker.expense_2.util.ButtonFabric.editSwitchBtn;
-import static dro.volkov.booker.expense_2.util.ButtonFabric.filterSwitchBtn;
+import static dro.volkov.booker.expense_2.util.AppButtons.editSwitchBtn;
+import static dro.volkov.booker.expense_2.util.AppButtons.filterSwitchBtn;
 
 @JavaScript("./src/swipe-behavior.js")
 public class MainLayout extends AppLayout implements SwipeMaster {
