@@ -11,18 +11,21 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 import dro.volkov.booker.SwipeEvent;
 import dro.volkov.booker.SwipeMaster;
+import dro.volkov.booker.general.event.EditorSwitchNotifier;
 import dro.volkov.booker.general.event.FilterPublisher;
-import dro.volkov.booker.general.event.OpenFilterNotifier;
+import dro.volkov.booker.general.event.FilterSwitchPublisher;
+import dro.volkov.booker.general.event.FormSwitchCommandNotifier;
 import lombok.SneakyThrows;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static dro.volkov.booker.expense_2.util.FormConfigurator.bindFields;
+import static dro.volkov.booker.general.event.FormSwitchCommandEvent.FormType.FILTER;
 
 public class FilterForm_2<T> extends FormLayout
-        implements FilterPublisher<T>,
-        OpenFilterNotifier,
+        implements FilterPublisher<T>, FilterSwitchPublisher,
+        FormSwitchCommandNotifier, EditorSwitchNotifier,
         SwipeMaster {
 
     protected final H2 title = new H2("Filter");
@@ -33,36 +36,52 @@ public class FilterForm_2<T> extends FormLayout
     protected final HasValue<?, ?>[] fields;
 
     protected Registration swipeReg;
-    protected Registration openFilterReg;
+    protected Registration filterSwitchReg;
+    protected Registration editorSwitchReg;
+    protected Registration formSwitchCommandReg;
 
     public FilterForm_2(Class<T> beanType, HasValue<?, ?>... fields) {
         this.beanType = beanType;
         this.binder = new BeanValidationBinder<>(beanType);
         this.fields = fields;
-        bindFields(binder, fields);
-        add(title);
+        bindFields(this.binder, fields);
+        add(this.title);
         add(Arrays.stream(fields)
                 .map(hasValue -> (Component) hasValue)
                 .peek(field -> field.getElement().getClassList().add("filter-field"))
                 .toArray(Component[]::new));
+        setColspan(this.title, fields.length);
+        setResponsiveSteps(
+                new ResponsiveStep("0", 1),
+                new ResponsiveStep("500px", fields.length)
+        );
         configView();
     }
 
     protected void configView() {
         addClassName("filter-form");
         asSwipeEventGenerator(this);
-        close();
+        switchOpened(false);
     }
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-        this.swipeReg = addListener(SwipeEvent.class, event -> {
-            if (event.getDirection().equals("up") && isVisible()) {
-                close();
+        this.formSwitchCommandReg = addUIFormSwitchCommandListener(event -> {
+            if (event.getFormType().equals(FILTER)) {
+                switchOpened(!isVisible());
             }
         });
-        this.openFilterReg = addUIOpenFilterListener(event -> setVisible(!isVisible()));
+        this.editorSwitchReg = addUIEditorSwitchListener(event -> {
+            if (event.isOpened()) {
+                switchOpened(false);
+            }
+        });
+        this.swipeReg = addListener(SwipeEvent.class, event -> {
+            if (event.getDirection().equals("up") && isVisible()) {
+                switchOpened(false);
+            }
+        });
         clear();
         pushFilter();
     }
@@ -70,26 +89,29 @@ public class FilterForm_2<T> extends FormLayout
     @Override
     protected void onDetach(DetachEvent detachEvent) {
         super.onDetach(detachEvent);
+        this.formSwitchCommandReg.remove();
+        this.editorSwitchReg.remove();
         this.swipeReg.remove();
     }
 
     protected void pushFilter() {
         T formBean = getNewInstance();
-        if (binder.writeBeanIfValid(formBean)) {
+        if (this.binder.writeBeanIfValid(formBean)) {
             fireUIFilterEvent(formBean);
         }
     }
 
     protected void clear() {
-        Stream.of(fields).forEach(HasValue::clear);
+        Stream.of(this.fields).forEach(HasValue::clear);
     }
 
-    protected void close() {
-        setVisible(false);
+    protected void switchOpened(boolean opened) {
+        setVisible(opened);
+        fireUIFilterSwitchEvent(opened);
     }
 
     @SneakyThrows
     protected T getNewInstance() {
-        return beanType.getConstructor().newInstance();
+        return this.beanType.getConstructor().newInstance();
     }
 }

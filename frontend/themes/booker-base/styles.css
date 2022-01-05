@@ -34,9 +34,9 @@ a[highlight] {
 
 .chart-node {
     flex-grow: 1;
-    max-width: calc(100% / 2);
+    /*max-width: calc(100% / 2);*/
+    width: 100%;
 }
 
 .filter-field {
-    background: burlywood;
 }

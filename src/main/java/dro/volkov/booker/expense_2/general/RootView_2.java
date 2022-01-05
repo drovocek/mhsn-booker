@@ -37,19 +37,18 @@ public abstract class RootView_2<T extends HasNew, F> extends VerticalLayout {
     protected void configView() {
         addClassName("root-grid-view");
         setSizeFull();
-        configureColumns(grid, beanType);
-        configureGrid(grid);
-        add(filterForm, createEntityView());
-        grid.getColumns().forEach(col -> System.out.println(col.getKey()));
+        configureColumns(this.grid, this.beanType);
+        configureGrid(this.grid);
+        add(this.filterForm, createEntityView());
     }
 
     protected Component createEntityView() {
         return new HorizontalLayout() {
             {
                 addClassNames("content");
-                add(grid, editForm);
-                setFlexGrow(2, grid);
-                setFlexGrow(1, editForm);
+                add(RootView_2.this.grid, RootView_2.this.editForm);
+                setFlexGrow(2, RootView_2.this.grid);
+                setFlexGrow(1, RootView_2.this.editForm);
                 setSizeFull();
             }
         };

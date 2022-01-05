@@ -8,11 +8,11 @@ import com.vaadin.flow.shared.Registration;
 
 import java.io.Serializable;
 
-public interface SelectNotifier<T> extends Serializable {
+public interface EditorSwitchNotifier extends Serializable {
 
-    default Registration addUISelectListener(ComponentEventListener<SelectEvent<T>> listener) {
+    default Registration addUIEditorSwitchListener(ComponentEventListener<EditorSwitchEvent> listener) {
         if (this instanceof Component) {
-            return ComponentUtil.addListener(UI.getCurrent(), SelectEvent.class, (ComponentEventListener)listener);
+            return ComponentUtil.addListener(UI.getCurrent(), EditorSwitchEvent.class, listener);
         } else {
             throw new IllegalStateException(String.format("The class '%s' doesn't extend '%s'. Make your implementation for the method '%s'.", this.getClass().getName(), Component.class.getSimpleName(), "addKeyDownListener"));
         }

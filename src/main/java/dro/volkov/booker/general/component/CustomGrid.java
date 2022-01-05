@@ -10,7 +10,9 @@ import dro.volkov.booker.general.event.*;
 
 import static dro.volkov.booker.util.NotificationUtil.noticeSSS;
 
-public class CustomGrid<T extends HasFilterField> extends Grid<T> implements SelectPublisher<T>, DeleteNotifier<T>, SaveNotifier<T>, FilterNotifier<T>, CloseNotifier {
+public class CustomGrid<T extends HasFilterField> extends Grid<T>
+        implements SelectPublisher<T>, DeleteNotifier<T>,
+        SaveNotifier<T>, FilterNotifier<T>, CloseNotifier {
 
     protected final FilterCrudService<T> service;
 

@@ -4,13 +4,13 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import lombok.Getter;
 
-public class SelectEvent<T> extends ComponentEvent<Component> {
+public class EditorSwitchEvent extends ComponentEvent<Component> {
 
     @Getter
-    private final T selected;
+    private final boolean opened;
 
-    public SelectEvent(Component source, T selected) {
+    public EditorSwitchEvent(Component source, boolean opened) {
         super(source, false);
-        this.selected = selected;
+        this.opened = opened;
     }
 }

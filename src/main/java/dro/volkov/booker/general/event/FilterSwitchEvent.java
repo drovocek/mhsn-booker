@@ -5,9 +5,12 @@ import com.vaadin.flow.component.ComponentEvent;
 import lombok.Getter;
 
 @Getter
-public class OpenFilterEvent extends ComponentEvent<Component> {
+public class FilterSwitchEvent extends ComponentEvent<Component> {
 
-    public OpenFilterEvent(Component source) {
+    private final boolean opened;
+
+    public FilterSwitchEvent(Component source, boolean opened) {
         super(source, false);
+        this.opened = opened;
     }
 }
