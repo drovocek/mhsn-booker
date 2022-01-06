@@ -33,4 +33,28 @@ public interface ExpenseRepository_2 extends JpaRepository<Expense_2, Integer> {
 
     @Query("SELECT e from Expense e WHERE e.date >= :startDate AND e.date < :endDate")
     List<Expense_2> getBetweenHalfOpenAll(LocalDate startDate, LocalDate endDate);
+
+
+    @Query("""
+            SELECT COUNT(e) FROM Expense e
+            JOIN FETCH e.user
+            WHERE e.user.id = :userId
+            AND e.category.id = :categoryId
+            AND e.price = :price
+            AND (:date IS NULL OR e.date = :date)
+            AND LOWER(e.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+                                        """)
+    int getCount(Integer categoryId, Double price, LocalDate date, String description);
+
+    @Query("""
+            SELECT COUNT(e) FROM Expense e
+            JOIN FETCH e.user
+            WHERE e.user.id = :userId
+            AND e.category.id = :categoryId
+            AND e.price = :price
+            AND (:date IS NULL OR e.date = :date)
+            AND LOWER(e.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+            LIMIT :limit OFFSET :offset
+                                        """)
+    List<Expense_2> fetch(Integer categoryId, Double price, LocalDate date, String description, int offset, int limit);
 }

@@ -3,8 +3,10 @@ package dro.volkov.booker.expense_2;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
+import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.shared.Registration;
+import dro.volkov.booker.general.data.entity.HasNew;
 import dro.volkov.booker.general.event.*;
 
 import java.util.ArrayList;
@@ -12,8 +14,8 @@ import java.util.List;
 
 import static dro.volkov.booker.util.NotificationUtil.noticeSSS;
 
-public class CustomGrid_2<T> extends Grid<T>
-        implements FilterNotifier<T>, DeleteNotifier<T>, SaveNotifier<T>, FilterSwitchNotifier,
+public class CustomGrid_2<T extends HasNew> extends Grid<T>
+        implements FilterNotifier<Object>, DeleteNotifier<T>, SaveNotifier<T>, FilterSwitchNotifier,
         SelectPublisher<T> {
 
     protected final DataService<T> dataService;
@@ -24,6 +26,7 @@ public class CustomGrid_2<T> extends Grid<T>
     protected Registration filterSwitchReg;
 
     protected final List<T> dataStore = new ArrayList<>();
+    protected ConfigurableFilterDataProvider<T, Void, Object> cDataProvider;
 
     public CustomGrid_2(DataService<T> dataService) {
         this.dataService = dataService;
@@ -38,19 +41,39 @@ public class CustomGrid_2<T> extends Grid<T>
         configDataProvider();
     }
 
+//    protected void configDataProvider() {
+//        setItems(new ListDataProvider<>(this.dataStore));
+//    }
+
     protected void configDataProvider() {
-        setItems(new ListDataProvider<>(this.dataStore));
+        DataProvider<T, Object> dataProvider =
+                DataProvider.fromFilteringCallbacks(query -> {
+                    Object filter = query.getFilter().orElse(null);
+                    return dataService.fetch(query.getOffset(), query.getLimit(), filter).stream();
+                }, query -> {
+                    Object filter = query.getFilter().orElse(null);
+                    return dataService.getCount(filter);
+                });
+        this.cDataProvider = dataProvider.withConfigurableFilter();
+        setDataProvider(this.cDataProvider);
     }
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-        this.filterReg = addUIFilterListener(event -> updateList(event.getFilter()));
+        this.filterReg = addUIFilterListener(event -> this.cDataProvider.setFilter(event.getFilter()));
+        //updateList(event.getFilter()));
         this.deleteReg = addUIDeleteListener(event -> deleteEntity(event.getDeleted()));
         this.saveReg = addUISaveListener(event -> {
+            boolean isNew = event.getPersist().isNew();
             T saved = saveEntity(event.getPersist());
-            getDataProvider().refreshItem(saved);
-            clearSelect();
+            if (isNew) {
+                this.dataStore.add(saved);
+                getDataProvider().refreshAll();
+            } else {
+                getDataProvider().refreshItem(saved);
+                clearSelect();
+            }
             noticeSSS("Save succeeded");
         });
         this.filterSwitchReg = addUIFilterSwitchListener(event -> {

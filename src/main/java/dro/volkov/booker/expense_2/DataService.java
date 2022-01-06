@@ -11,4 +11,8 @@ public interface DataService<T> {
     List<T> getAll();
 
     List<T> findByFilter(Object filter);
+
+    List<T> fetch(int offset, int limit, Object filter);
+
+    int getCount(Object filter);
 }

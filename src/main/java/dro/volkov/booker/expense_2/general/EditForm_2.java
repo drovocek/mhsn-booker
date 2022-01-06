@@ -3,7 +3,6 @@ package dro.volkov.booker.expense_2.general;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -18,8 +17,7 @@ import lombok.SneakyThrows;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static com.vaadin.flow.component.button.ButtonVariant.*;
-import static dro.volkov.booker.expense_2.util.AppButtons.appButton;
+import static dro.volkov.booker.expense_2.util.AppButtons.*;
 import static dro.volkov.booker.expense_2.util.FormConfigurator.bindFields;
 import static dro.volkov.booker.general.event.FormSwitchCommandEvent.FormType.EDIT;
 
@@ -55,8 +53,7 @@ public class EditForm_2<T extends HasNew> extends VerticalLayout
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
         this.selectReg = addUISelectListener(event -> {
-            Optional
-                    .ofNullable(event.getSelected())
+            Optional.ofNullable(event.getSelected())
                     .ifPresentOrElse(selected -> {
                                 fillForm(selected);
                                 switchOpened(true);
@@ -66,6 +63,7 @@ public class EditForm_2<T extends HasNew> extends VerticalLayout
         this.formSwitchCommandReg = addUIFormSwitchCommandListener(event -> {
             if (event.getFormType().equals(EDIT)) {
                 switchOpened(!isVisible());
+                fillForm(null);
             }
         });
         this.filterSwitchReg = addUIFilterSwitchListener(event -> {
@@ -108,52 +106,40 @@ public class EditForm_2<T extends HasNew> extends VerticalLayout
     protected Component createButtonsLayout() {
         return new HorizontalLayout() {
 
-            final Button delete;
-            private Registration editorSwitchReg;
+            private final Button delete;
+            private Registration selectReg;
+            private Registration formSwitchCommandReg;
 
             @Override
             protected void onAttach(AttachEvent attachEvent) {
                 super.onAttach(attachEvent);
-                this.editorSwitchReg = addUIEditorSwitchListener(event -> delete.setVisible(event.getSelected() != null));
+                this.selectReg = addUISelectListener(event -> delete.setVisible(event.getSelected() != null));
+                this.formSwitchCommandReg = addUISwitchCommandListener(event -> {
+                    if (event.getFormType().equals(EDIT)) {
+                        delete.setVisible(false);
+                    }
+                });
             }
 
-            private Registration addUIEditorSwitchListener(ComponentEventListener<SelectEvent<T>> listener) {
+            private Registration addUISelectListener(ComponentEventListener<SelectEvent<T>> listener) {
                 return ComponentUtil.addListener(UI.getCurrent(), SelectEvent.class, (ComponentEventListener) listener);
+            }
+
+            private Registration addUISwitchCommandListener(ComponentEventListener<FormSwitchCommandEvent> listener) {
+                return ComponentUtil.addListener(UI.getCurrent(), FormSwitchCommandEvent.class, listener);
             }
 
             @Override
             protected void onDetach(DetachEvent detachEvent) {
                 super.onDetach(detachEvent);
-                this.editorSwitchReg.remove();
+                this.selectReg.remove();
+                this.formSwitchCommandReg.remove();
             }
 
             {
-                final Button save = appButton(
-                        "Save",
-                        VaadinIcon.DATABASE,
-                        () -> validateAndPushSave(),
-                        LUMO_LARGE,
-                        LUMO_ICON,
-                        LUMO_SUCCESS,
-                        LUMO_TERTIARY);
-                final Button close = appButton(
-                        "Close",
-                        VaadinIcon.CLOSE,
-                        () -> clearGridSelect(),
-                        LUMO_LARGE,
-                        LUMO_ICON,
-                        LUMO_CONTRAST);
-                this.delete = appButton(
-                        "Delete",
-                        VaadinIcon.TRASH,
-                        () -> fireUIDeleteEvent(EditForm_2.this.formBean),
-                        LUMO_LARGE,
-                        LUMO_ICON,
-                        LUMO_ERROR,
-                        LUMO_TERTIARY);
-
-                save.addClickShortcut(Key.ENTER);
-                close.addClickShortcut(Key.ESCAPE);
+                final Button save = saveBtn(() -> validateAndPushSave());
+                final Button close = closeBtn(() -> clearGridSelect());
+                this.delete = deleteBtn(() -> fireUIDeleteEvent(EditForm_2.this.formBean));
 
                 EditForm_2.this.binder.addStatusChangeListener(e -> save.setEnabled(EditForm_2.this.binder.isValid()));
                 add(save, close, delete);
@@ -165,6 +151,7 @@ public class EditForm_2<T extends HasNew> extends VerticalLayout
     protected void validateAndPushSave() {
         if (binder.writeBeanIfValid(formBean)) {
             fireUISaveEvent(formBean);
+            switchOpened(false);
         }
     }
 

@@ -24,6 +24,16 @@ public class CategoryCrudService_2 implements DataService<Category> {
     }
 
     @Override
+    public List<Category> fetch(int offset, int limit, Object filter) {
+        return null;
+    }
+
+    @Override
+    public int getCount(Object filter) {
+        return 0;
+    }
+
+    @Override
     public Category save(Category contact) {
         return categoryRepository.save(contact);
     }

@@ -2,8 +2,8 @@ package dro.volkov.booker.expense_2;
 
 import dro.volkov.booker.dashboard.DateScale;
 import dro.volkov.booker.security.service.SecurityService;
+import dro.volkov.booker.user.data.UserRepository;
 import dro.volkov.booker.user.data.dict.Role;
-import dro.volkov.booker.user.data.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +11,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
@@ -20,6 +21,7 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 public class ExpenseCrudService_2 implements DataService<Expense_2> {
 
     private final ExpenseRepository_2 expenseRepository;
+    private final UserRepository userRepository;
     private final SecurityService securityService;
 
     @Override
@@ -31,12 +33,11 @@ public class ExpenseCrudService_2 implements DataService<Expense_2> {
     public Expense_2 save(Expense_2 expense) {
         if (expense.isNew()) {
             securityService.getAuthenticatedUserId()
-                    .map(User::new)
+                    .map(userRepository::findById)
+                    .map(Optional::get)
                     .ifPresentOrElse(expense::setUser, securityService::logout);
-            return null;
-        } else {
-            return expenseRepository.save(expense);
         }
+        return expenseRepository.save(expense);
     }
 
     @Override
@@ -49,6 +50,28 @@ public class ExpenseCrudService_2 implements DataService<Expense_2> {
 //                    .orElse(Collections.emptyList());
 //        }
         return getAll();
+    }
+
+    @Override
+    public List<Expense_2> fetch(int offset, int limit, Object filter) {
+        ExpenseFilter expenseFilter = (ExpenseFilter) filter;
+        return expenseRepository.fetch(
+                expenseFilter.getCategory().getId(),
+                expenseFilter.getPrice(),
+                expenseFilter.getDate(),
+                expenseFilter.getDescription(),
+                offset,
+                limit);
+    }
+
+    @Override
+    public int getCount(Object filter) {
+        ExpenseFilter expenseFilter = (ExpenseFilter) filter;
+        return expenseRepository.getCount(
+                expenseFilter.getCategory().getId(),
+                expenseFilter.getPrice(),
+                expenseFilter.getDate(),
+                expenseFilter.getDescription());
     }
 
     @Override

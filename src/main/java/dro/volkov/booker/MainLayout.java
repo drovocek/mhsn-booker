@@ -5,7 +5,7 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -44,8 +44,8 @@ public class MainLayout extends AppLayout implements SwipeMaster {
         });
     }
 
-    private H2 getTitle() {
-        return new H2() {{
+    private H1 getTitle() {
+        return new H1() {{
             setText("Booker");
             getStyle()
                     .set("font-size", "var(--lumo-font-size-l)")
